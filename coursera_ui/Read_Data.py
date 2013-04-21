@@ -120,6 +120,7 @@ def clustering():
 def process_query(q):
     global query
     global course_idf
+    query.clear()
     tok = re.findall(r'\w+',q,re.UNICODE)
     tok = [x.lower() for x in tok]
     for word in tok:
@@ -127,8 +128,9 @@ def process_query(q):
     norm = 0
     for key in query:
         val = query[key]
-        query[key] = (1 + math.log(val,2)) * course_idf[key]
-        norm += query[key] * query[key]
+    	if key in course_idf:
+	    	query[key] = (1 + math.log(val,2)) * course_idf[key]
+	    	norm += query[key] * query[key]
     norm = math.sqrt(norm)
     if norm !=0 :
         for key in query:
@@ -188,7 +190,7 @@ def search():
 	global q_result
 	global course_text
 	q_result.clear()
-	final_result = []
+	final_result = set()
 	d_list = find_closest_cluster()
 	cnt = 1
     
@@ -199,8 +201,7 @@ def search():
 					q_result[doc] += query[key] * course_tfidf[doc][key]
 		results= sorted(q_result.items(), reverse = True, key=lambda x : x[1])
 		for r in results:
-			if r not in final_result:
-				final_result.append(r[0])
+			final_result.add(r[0])
 		results = []
 	'''	
 	#print 'Found ' , len(results), ' results..'
@@ -214,7 +215,10 @@ def search():
 			break
 		#raw_input()
 	'''
-	return final_result[0:10]
+	if len(final_result) > 10:
+		return (list(final_result))[0:10]
+	else:
+		return list(final_result)
 
 def preprocess():
 	process_json()

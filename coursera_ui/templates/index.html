@@ -7,6 +7,7 @@
         a: $('input[name="a"]').val()
       }, function(data) {
       	 var $ol = $('<ol>');
+		$('#content').empty()
 		$('#content').append($ol);
       	$.each(data.result, function(i,l)
       	{
@@ -14,8 +15,7 @@
       		$li.append(l)
       		$ol.append($li);
       	});
-        $('#result').text(data.result);
-        $('input[name=a]').focus().select();
+        
       });
       return false;
     };
