@@ -6,16 +6,21 @@
       $.getJSON($SCRIPT_ROOT + '/_search', {
         a: $('input[name="a"]').val()
       }, function(data) {
-      	 var $ol = $('<ol>');
+      	 var $ul = $('<div>');
+		$('#content').empty();
 		$('#content').append($ul);
-      	$.each(data.result, function(i,l)
+		$.each(data.result, function(i,l)
       	{
-      		var $li = $('<li>');
-      		$li.append(l)
-      		$ol.append($li);
-      	});
-        $('#result').text(data.result);
-        $('input[name=a]').focus().select();
+      		$.each(l, function(ind,item)
+      		{
+		  		var $li = $('<div>');
+		  		if (ind == 3)
+		  			$li.append('<img width=120 src=' + item + '>');
+		  		else
+		  			$li.append(item)
+		  		$ul.append($li);
+		  	});
+      	});		
       });
       return false;
     };

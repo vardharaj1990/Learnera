@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, redirect
 app = Flask(__name__)
 import Read_Data
 @app.route('/_search')
@@ -11,6 +11,7 @@ def search():
 @app.route('/')
 def index():
     return render_template('index.html')
+ 
 
 if __name__ == '__main__':
 	app.debug = True

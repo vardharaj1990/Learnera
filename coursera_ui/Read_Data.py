@@ -28,6 +28,7 @@ course_tfidf = defaultdict(func)
 query = defaultdict(float)
 q_result = defaultdict(float)
 centroid = defaultdict(func)
+course_details = defaultdict(list)
 
 
 def read_json():
@@ -106,7 +107,21 @@ def process_courses():
 		tok = [x.lower() for x in tok]
 		tf_add(tok,course['short_name'])
 		idf_add(tok)
-
+		details = []
+		details.append(course['name'])
+		details.append(course['short_description'])
+		details.append(course['universities'][0]['name'])
+		details.append(course['small_icon_hover'])
+		details.append(course['instructor'])
+		details.append(course['courses'][len(course['courses']) - 1]['duration_string'])
+		details.append(course['courses'][len(course['courses']) - 1]['start_date_string'])
+		course_details[course['short_name']] = details
+		'''
+		if course['courses'][len(course['courses']) - 1]['eligible_for_signature_track'] == 'true':
+			details.append(course['courses'][len(course['courses']) - 1][']
+		'''
+		
+		
 def clustering():
 	global centroid
 	for c in clusters:
@@ -215,10 +230,11 @@ def search():
 			break
 		#raw_input()
 	'''
-	if len(final_result) > 10:
-		return (list(final_result))[0:10]
-	else:
-		return list(final_result)
+	details_course = []
+	for r in list(final_result)[0:10]:
+		details_course.append(course_details[r])
+	print details_course
+	return details_course
 
 def preprocess():
 	process_json()
