@@ -100,7 +100,8 @@ def process_courses():
 	content = f.readlines()
 	for line in content:
 		course = json.loads(line)
-		course_text[course['short_name']] = course['about_the_course']
+		course_text[course['short_name']] = course['name']
+		course_text[course['short_name']] += course['about_the_course']
 		course_text[course['short_name']] += course['short_description'] + course['description']
 		course_text[course['short_name']] = re.sub('<[^<]+?>|\\n', ' ', course_text[course['short_name']])
 		tok = re.findall(r'\w+',course_text[course['short_name']],re.UNICODE)
@@ -108,6 +109,7 @@ def process_courses():
 		tf_add(tok,course['short_name'])
 		idf_add(tok)
 		details = []
+		details.append(course['short_name'])
 		details.append(course['name'])
 		details.append(course['short_description'])
 		details.append(course['universities'][0]['name'])
@@ -116,11 +118,6 @@ def process_courses():
 		details.append(course['courses'][len(course['courses']) - 1]['duration_string'])
 		details.append(course['courses'][len(course['courses']) - 1]['start_date_string'])
 		course_details[course['short_name']] = details
-		'''
-		if course['courses'][len(course['courses']) - 1]['eligible_for_signature_track'] == 'true':
-			details.append(course['courses'][len(course['courses']) - 1][']
-		'''
-		
 		
 def clustering():
 	global centroid
@@ -150,41 +147,12 @@ def process_query(q):
     if norm !=0 :
         for key in query:
             query[key] /= norm
-
-def print_courses():
-    sc = 0
-    sn = 0
-    print 'Total number of courses: ', num_courses
-    print 'links: ', len(links)
-    for i in social_links:
-        if i != 'null':
-            print i
-            sc += 1
-    print sc
-    print num_courses
-    for i in short_names:
-        if i!= 'null':
-            sn += 1 
-            print i
-    print 'short names: ' 
-    print clusters
-    '''
-    for i in links:
-        print i
-        '''
         
 def find_dist(a, b):
     dist = 0.0
     for term in a:
         if term in b:
             dist += a[term] * b[term]
-        '''
-        else:
-            dist += math.pow(a[term], 2)
-    for term in b:
-        if term not in a:
-            dist += math.pow(b[term], 2)
-            '''
     return dist
 
 
@@ -205,7 +173,7 @@ def search():
 	global q_result
 	global course_text
 	q_result.clear()
-	final_result = set()
+	final_result = []
 	d_list = find_closest_cluster()
 	cnt = 1
     
@@ -216,24 +184,13 @@ def search():
 					q_result[doc] += query[key] * course_tfidf[doc][key]
 		results= sorted(q_result.items(), reverse = True, key=lambda x : x[1])
 		for r in results:
-			final_result.add(r[0])
+			if r[0] not in final_result:
+				final_result.append(r[0])
 		results = []
-	'''	
-	#print 'Found ' , len(results), ' results..'
-	for e in final_result:
-		print ''
-		print 'Rank: ', cnt
-		print 'ID: ', e
-		#print 'Text: ', course_text[e[0]]
-		cnt += 1
-		if cnt == 10:
-			break
-		#raw_input()
-	'''
+
 	details_course = []
-	for r in list(final_result)[0:10]:
+	for r in final_result[0:10]:
 		details_course.append(course_details[r])
-	print details_course
 	return details_course
 
 def preprocess():

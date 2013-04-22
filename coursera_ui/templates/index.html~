@@ -11,11 +11,16 @@
 		$('#content').append($ul);
 		$.each(data.result, function(i,l)
       	{
+      		var link;
       		$.each(l, function(ind,item)
       		{
 		  		var $li = $('<div>');
-		  		if (ind == 3)
+		  		if (ind == 4)
 		  			$li.append('<img width=120 src=' + item + '>');
+		  		else if (ind == 0)
+		  			link = 'https://www.coursera.org/course/' + item;
+		  		else if (ind == 1)
+		  			$li.append('<a href =' + link + '>' + item);
 		  		else
 		  			$li.append(item)
 		  		$ul.append($li);
