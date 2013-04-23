@@ -2,32 +2,63 @@
 {% block body %}
 <script type=text/javascript>
   $(function() {
-    var submit_form = function(e) {
-      $.getJSON($SCRIPT_ROOT + '/_search', {
-        a: $('input[name="a"]').val()
-      }, function(data) {
-      	 var $ul = $('<div>');
-		$('#content').empty();
-		$('#content').append($ul);
-		$.each(data.result, function(i,l)
-      	{
-      		var link;
-      		$.each(l, function(ind,item)
-      		{
-		  		var $li = $('<div>');
-		  		if (ind == 4)
-		  			$li.append('<img width=120 src=' + item + '>');
-		  		else if (ind == 0)
-		  			link = 'https://www.coursera.org/course/' + item;
-		  		else if (ind == 1)
-		  			$li.append('<a href =' + link + ' target=_blank>' + item);
-		  		else
-		  			$li.append(item)
-		  		$ul.append($li);
+    var submit_form = function(e) 
+    {
+		  $.getJSON($SCRIPT_ROOT + '/_search', 
+		  {
+			a: $('input[name="a"]').val()
+		  }, function(data) 
+		  {
+		  	 var $ul = $('<div>');
+			$('#content').empty();
+			$('#content').append($ul);
+			$.each(data.result, function(i,l)
+		  	{
+		  		var link;
+		  		$.each(l, function(ind,item)
+		  		{
+			  		var $li = $('<div>');
+			  		if (ind == 4)
+			  			$li.append('<img width=120 src=' + item + '>');
+			  		else if (ind == 0)
+			  			link = 'https://www.coursera.org/course/' + item;
+			  		else if (ind == 1)
+			  			$li.append('<a href =' + link + ' target=_blank>' + item);
+			  		else
+			  			$li.append(item)
+			  		$ul.append($li);
+			  	});
 		  	});
-      	});		
-      });
-      return false;
+      			
+      	});
+      	
+      	 $.getJSON($SCRIPT_ROOT + '/_search_mit', 
+		  {
+			a: $('input[name="a"]').val()
+		  }, function(data) 
+		  {
+		  	 var $ul = $('<div>');
+			$('#content').append($ul);
+			$.each(data.result, function(i,l)
+		  	{
+		  		var link;
+		  		$.each(l, function(ind,item)
+		  		{
+			  		var $li = $('<div>');
+			  		if (ind == 0)
+			  			link = item;
+			  		else if (ind == 1)
+			  			$li.append('<a href =' + link + ' target=_blank>' + item);
+			  		else if (ind == 6)
+			  			$li.append('<a href= ' + item + ' target=_blank><img width=20 height=20 src=http://ridiculousfish.com/hexfiend/images/download_square.png></img></a>');
+			  		else
+			  			$li.append(item);
+			  		$ul.append($li);
+			  	});
+		  	});
+      			
+      	});
+      	return false;
     };
 
     $('a#calculate').bind('click', submit_form);

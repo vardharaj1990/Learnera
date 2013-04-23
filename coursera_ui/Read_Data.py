@@ -102,7 +102,7 @@ def process_courses():
 		course = json.loads(line)
 		course_text[course['short_name']] = course['name']
 		course_text[course['short_name']] += course['about_the_course']
-		course_text[course['short_name']] += course['short_description'] + course['description']
+		#course_text[course['short_name']] += course['short_description'] + course['description']
 		course_text[course['short_name']] = re.sub('<[^<]+?>|\\n', ' ', course_text[course['short_name']])
 		tok = re.findall(r'\w+',course_text[course['short_name']],re.UNICODE)
 		tok = [x.lower() for x in tok]
@@ -189,7 +189,7 @@ def search():
 		results = []
 
 	details_course = []
-	for r in final_result[0:10]:
+	for r in final_result[0:5]:
 		details_course.append(course_details[r])
 	return details_course
 

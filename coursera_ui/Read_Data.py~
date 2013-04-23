@@ -147,24 +147,6 @@ def process_query(q):
     if norm !=0 :
         for key in query:
             query[key] /= norm
-
-def print_courses():
-    sc = 0
-    sn = 0
-    print 'Total number of courses: ', num_courses
-    print 'links: ', len(links)
-    for i in social_links:
-        if i != 'null':
-            print i
-            sc += 1
-    print sc
-    print num_courses
-    for i in short_names:
-        if i!= 'null':
-            sn += 1 
-            print i
-    print 'short names: ' 
-    print clusters
         
 def find_dist(a, b):
     dist = 0.0
@@ -207,7 +189,7 @@ def search():
 		results = []
 
 	details_course = []
-	for r in final_result[0:10]:
+	for r in final_result[0:5]:
 		details_course.append(course_details[r])
 	return details_course
 
