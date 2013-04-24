@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block body %}
+<script type=text/javascript>
+  $(function() {
+    var linkedin_login = function(e) {
+      $.getJSON($SCRIPT_ROOT + '/_login', {
+      }, function() {
+        
+      });
+      return false;
+    };
+
+    $('a#login').bind('click', linkedin_login);
+
+    $('input[type=text]').bind('keydown', function(e) {
+      if (e.keyCode == 13) {
+        linkedin_login(e);
+      }
+    });
+
+  });
+</script>
+
+<a href=# id=login>Login with LinkedIn!</a>
+{% endblock %}

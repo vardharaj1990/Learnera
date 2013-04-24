@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block body %}
+<script type=text/javascript>
+  $(function() {
+    var submit_form = function(e) {
+      $.getJSON($SCRIPT_ROOT + '/_search', {
+        a: $('input[name="a"]').val()
+      }, function(data) {
+      	 var $ul = $('<div>');
+		$('#content').empty();
+		$('#content').append($ul);
+		$.each(data.result, function(i,l)
+      	{
+      		var link;
+      		$.each(l, function(ind,item)
+      		{
+		  		var $li = $('<div>');
+		  		if (ind == 4)
+		  			$li.append('<img width=120 src=' + item + '>');
+		  		else if (ind == 0)
+		  			link = 'https://www.coursera.org/course/' + item;
+		  		else if (ind == 1)
+		  			$li.append('<a href =' + link + ' target=_blank>' + item);
+		  		else
+		  			$li.append(item)
+		  		$ul.append($li);
+		  	});
+      	});		
+      });
+      return false;
+    };
+
+    $('a#calculate').bind('click', submit_form);
+
+    $('input[type=text]').bind('keydown', function(e) {
+      if (e.keyCode == 13) {
+        submit_form(e);
+      }
+    });
+
+    $('input[name=a]').focus();
+  });
+</script>
+<h1>What do you want to learn today?</h1>
+<p>
+  <input type=text size=20 name=a> 
+<p><a href=# id=calculate>Search!</a>
+<p><div id=content></div>
+{% endblock %}
