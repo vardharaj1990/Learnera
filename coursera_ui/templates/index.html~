@@ -9,55 +9,83 @@
 			a: $('input[name="a"]').val()
 		  }, function(data) 
 		  {
-		  	 var $ul = $('<div>');
-			$('#content').empty();
-			$('#content').append($ul);
-			$.each(data.result, function(i,l)
-		  	{
-		  		var link;
-		  		$.each(l, function(ind,item)
-		  		{
-			  		var $li = $('<div>');
-			  		if (ind == 4)
-			  			$li.append('<img width=120 src=' + item + '>');
-			  		else if (ind == 0)
-			  			link = 'https://www.coursera.org/course/' + item;
-			  		else if (ind == 1)
-			  			$li.append('<a href =' + link + ' target=_blank>' + item);
-			  		else
-			  			$li.append(item)
-			  		$ul.append($li);
-			  	});
-		  	});
+			  	 var $ul = $('<div style=width:inherit;>');
+				$('#content').empty();
+				$('#content').append($ul);
+				$.each(data.result, function(i,l)
+			  	{
+			  		if(l[0] == 'coursera')
+			  		{
+				  		var link;
+				  		$.each(l, function(ind,item)
+				  		{
+					  		if (ind == 0)
+					  			return true;
+					  		var $li = $('<div style=width:inherit;>');
+					  		if (ind == 5)
+					  			$li.append('<img width=120 src=' + item + '>');
+					  		else if (ind == 1)
+					  			link = 'https://www.coursera.org/course/' + item;
+					  		else if (ind == 2)
+					  			$li.append('<a href =' + link + ' target=_blank>' + item);
+					  		else 
+					  			$li.append(item)
+					  		$ul.append($li);
+					  	});
+				  	}
+				  	else
+				  	{
+					  	var link;
+				  		$.each(l, function(ind,item)
+				  		{
+					  		if (ind == 0)
+					  			return true;
+					  			
+					  		var $li = $('<div  style=width:inherit;>');
+					  		if (ind == 1)
+					  			link = item;
+					  		else if (ind == 2)
+					  			$li.append('<a href =' + link + ' target=_blank>' + item);
+					  		else if (ind == 7)
+					  			$li.append('<a href= ' + item + ' target=_blank><img width=20 height=20 src=http://ridiculousfish.com/hexfiend/images/download_square.png></img></a>');
+					  		else
+					  			$li.append(item);
+					  		$ul.append($li);
+					  	});
+				  	}
+			  });
       			
       	});
-      	
-      	 $.getJSON($SCRIPT_ROOT + '/_search_mit', 
+		
+		$.getJSON($SCRIPT_ROOT + '/_search_isbn', 
 		  {
 			a: $('input[name="a"]').val()
 		  }, function(data) 
 		  {
-		  	 var $ul = $('<div>');
-			$('#content').append($ul);
-			$.each(data.result, function(i,l)
-		  	{
-		  		var link;
-		  		$.each(l, function(ind,item)
-		  		{
-			  		var $li = $('<div>');
-			  		if (ind == 0)
-			  			link = item;
-			  		else if (ind == 1)
-			  			$li.append('<a href =' + link + ' target=_blank>' + item);
-			  		else if (ind == 6)
-			  			$li.append('<a href= ' + item + '><img width=20 height=20 src=http://ridiculousfish.com/hexfiend/images/download_square.png></img></a>');
-			  		else
-			  			$li.append(item);
-			  		$ul.append($li);
-			  	});
-		  	});
-      			
-      	});
+			  	$('#book_content').empty();
+			  	var $ul = $('<div style=width:inherit;>');
+				$('#book_content').append($ul);
+				$.each(data.result, function(i,l)
+			  	{
+			  	
+			  		var link;
+			  		$.each(l, function(ind,item)
+			  		{
+				  	
+				  		var $li = $('<div style=width:inherit;>');
+				  		if (ind == 0)
+				  			$li.append('<img width=60 src=http:/covers.openlibrary.org/b/isbn/' + item + '-S.jpg>');
+				  		else if (ind == 2)
+				  			link = item;
+				  		else if (ind == 3)
+				  			$li.append('<a href =' + link + ' target=_blank>' + item);
+				  		else 
+				  			return true;
+				  		$ul.append($li);
+				  	});
+				 });
+			}); 
+				  	
       	return false;
     };
 
@@ -76,5 +104,9 @@
 <p>
   <input type=text size=20 name=a> 
 <p><a href=# id=calculate>Search!</a>
-<p><div id=content></div>
+<p><div id =spell></div>
+<div>
+<div style = "float:left;width:700px;overflow:auto" id=content></div>
+<div style = "float:left;top-margin:100px;left-margin:500px;width:300px;overflow:auto" id=book_content></div>
+</div>
 {% endblock %}

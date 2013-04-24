@@ -96,6 +96,7 @@ def process_json():
                 links.add(course['home_link'])
 
 def process_courses():
+	global num_courses 
 	f = open("courses.txt", 'rU')
 	content = f.readlines()
 	for line in content:
@@ -109,6 +110,7 @@ def process_courses():
 		tf_add(tok,course['short_name'])
 		idf_add(tok)
 		details = []
+		details.append('coursera')
 		details.append(course['short_name'])
 		details.append(course['name'])
 		details.append(course['short_description'])
@@ -119,9 +121,90 @@ def process_courses():
 		details.append(course['courses'][len(course['courses']) - 1]['start_date_string'])
 		course_details[course['short_name']] = details
 		
+	f.close()
+	
+	f = open("mit_ocw.txt", 'rU')
+	content = f.readlines()
+	for line in content:
+		r = json.loads(line)
+		for courses in r['Results']:
+		
+			
+			if 'Description' not in courses:
+				continue
+			
+			num_courses += 1
+			
+			#course_id.add(courses['UniqueID'])
+			details = []
+			
+			
+			details.append('mit')
+			
+			if 'CourseURL' in courses:
+				details.append(courses['CourseURL'])
+			else:
+				details.append('')
+				
+			if 'Title' in courses:
+				details.append(courses['Title'])
+			else:
+				details.append('')
+			
+			
+			if 'Description' in courses:
+				details.append(courses['Description'])
+			else:
+				details.append('')
+			
+			if 'InstitutionNameFull' in courses:
+				details.append(courses['InstitutionNameFull'])
+			else:
+				details.append('')
+			
+			if 'Instructors' in courses:
+				details.append(courses['Instructors'])	
+			else:
+				details.append('')
+			
+				
+			if 'TeachingDate' in courses:
+				details.append(courses['TeachingDate'])
+			else:
+				details.append('')
+			
+			if 'DownloadPageLink' in courses:
+				details.append(courses['DownloadPageLink'])
+			else:
+				details.append('')
+			'''
+
+			if 'CourseLanguage' in courses:
+				details.append(courses['CourseLanguage'])
+			else:
+				details.append('')
+			
+			
+			if 'CourseSection' in courses:
+				details.append(courses['CourseSection'])
+			else:
+				details.append('')
+			'''
+			
+			clusters[courses['CourseSection']].add(courses['UniqueID'])
+			course_details[courses['UniqueID']] = details
+			course_text[courses['UniqueID']] = courses['Title'] + courses['Description']
+			tok = re.findall(r'\w+',course_text[courses['UniqueID']],re.UNICODE)
+			tok = [x.lower() for x in tok]
+			tf_add(tok,courses['UniqueID'])
+			idf_add(tok)
+		
+		
 def clustering():
 	global centroid
 	for c in clusters:
+		if len(c) == 0:
+			continue
 		for course in clusters[c]:
 			for terms in course_tfidf[course]:
 				centroid[c][terms] += course_tfidf[course][terms]
@@ -189,7 +272,7 @@ def search():
 		results = []
 
 	details_course = []
-	for r in final_result[0:5]:
+	for r in final_result[0:10]:
 		details_course.append(course_details[r])
 	return details_course
 

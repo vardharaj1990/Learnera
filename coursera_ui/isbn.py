@@ -19,10 +19,23 @@ def getisbnData(query):
 
   	r = urllib.urlopen(isbnurl)
   	isbn = BeautifulSoup(r)
-  	booksdata = isbn.isbndb
-  	print booksdata
+  	booksdata = isbn.isbndb.booklist.find_all('bookdata')
+        returnBooks = [[] for _ in range(len(booksdata))]
+        bookLinkBase = 'https://isbndb.com/d/book/'
 
+        bookCount = 0
+        for d in booksdata:
+                isbnid = d.get('isbn')
+                bookid = d.get('book_id')
+                booklink = bookLinkBase + d.get('book_id') + '.html'
+                bookTitle = d.title.string
+                returnBooks[bookCount].append(isbnid)
+                returnBooks[bookCount].append(bookid)
+                returnBooks[bookCount].append(booklink)
+                returnBooks[bookCount].append(bookTitle)
+                bookCount = bookCount + 1
+        
+        return returnBooks       
+        
 
-if __name__ == "__main__":
-	 getisbnData('thief of time')
 	
