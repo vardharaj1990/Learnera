@@ -17,7 +17,7 @@ class Database():
 	Find user from the user collection with ID = uid
 	'''		
 	def find_user(self, ID):
-		if self.db.users.find({"uid": ID}) != None:
+		if self.db.users.find({"uid": ID}):
 			return self.db.users.find({"uid": ID})[0]
 		else:
 			return -1
@@ -26,7 +26,8 @@ class Database():
 	Insert user info into DB
 	'''
 	def insert_user(self, ret):
-		self.db.users.insert({"uid": ret['id'], "info": ret})
+		if self.db.users.find({"uid" : ret['id']}).count() < 1: 
+			self.db.users.insert({"uid": ret['id'], "info": ret})
 		
 	'''
 	Insert Course Info
