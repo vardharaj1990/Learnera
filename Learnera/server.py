@@ -8,15 +8,11 @@ from linkedin import linkedin
 import webbrowser
 import dbms
 import requests
-
-API_KEY = 'f2wy1ympdfcr'
-API_SECRET = 'wjXlB8Czxplt1mYK'
-RETURN_URL = 'http://localhost:5000/redir.html'
+import LinkedIn
 
 @app.route('/_search')
 def search():
     a = request.args.get('a', 0, type=str)
-    #b = request.args.get('b', 0, type=int)
     b = [spell_check.correct(x) for x in a.split()]
     actual_q = ''
     for word in a.split():
@@ -53,8 +49,9 @@ def search_mit():
 	
 @app.route('/_login')
 def login():
-	authentication = linkedin.LinkedInAuthentication(API_KEY, API_SECRET, RETURN_URL, linkedin.PERMISSIONS.enums.values())
-	webbrowser.open(authentication.authorization_url)  # open this url on your browser
+	lauth = LinkedIn.Auth()
+	url = lauth.auth_url()
+	webbrowser.open(url)  # open this url on your browser
 	return
 
 @app.route('/')
@@ -63,17 +60,10 @@ def home():
 
 @app.route('/redir.html')
 def redir():
-	authentication = linkedin.LinkedInAuthentication(API_KEY, API_SECRET, RETURN_URL, linkedin.PERMISSIONS.enums.values())
-	application = linkedin.LinkedInApplication(authentication)	
-
+	lauth = LinkedIn.Auth()	
 	if request.args.get('code', '') != '':
-		authentication.authorization_code = request.args.get('code', '')
-		authentication.get_access_token()
-		ret = {}
-		ret = application.get_profile(selectors=['id', 'first-name', 'last-name', 'location', 'distance', 'num-connections', 'skills', 'educations', 'interests', 'courses', 'following', 'related-profile-views', 'job-bookmarks', 'certifications'])
-		db = dbms.Database()
-		db.insert_user(ret)
-		name = ret['firstName']
+		code = request.args.get('code', '')
+		lauth.get_data(code)
 		return render_template('index.html')		
 	else:
 		print "No Auth Code\n"
