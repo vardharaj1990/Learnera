@@ -12,18 +12,18 @@ import LinkedIn
 
 @app.route('/_search')
 def search():
-    a = request.args.get('a', 0, type=str)
-    b = [spell_check.correct(x) for x in a.split()]
-    actual_q = ''
-    for word in a.split():
-    	actual_q = actual_q + word + ' '
-    	
-    query = ''
-    for word in b:
-    	query = query + word + ' '
+	a = request.args.get('a', 0, type=str)
+	b = [spell_check.correct(x) for x in a.split()]
+	actual_q = ''
+	for word in a.split():
+		actual_q = actual_q + word + ' '	
+	query = ''
+	for word in b:
+		query = query + word + ' '
+	res = Read_Data.work(query)
+	ret = isbn.getisbnData(query)
 
-    res = Read_Data.work(query)
-    return jsonify(result = res)
+	return jsonify(result = res, result2 = ret)
 
 @app.route('/_relevant')
 def relevant():
@@ -32,20 +32,6 @@ def relevant():
 	res = a + ' is not relevant for ' + b
 	return jsonify(result = res)
 
-    
-@app.route('/_search_isbn')
-def search_mit():
-	a = request.args.get('a', 0, type=str)
-	b = [spell_check.correct(x) for x in a.split()]
-	actual_q = ''
-	for word in a.split():
-		actual_q = actual_q + word + ' '
-	
-	query = ''
-	for word in b:
-		query = query + word + ' '
-	res = isbn.getisbnData(query)
-	return jsonify(result = res)
 	
 @app.route('/_login')
 def login():
@@ -73,5 +59,4 @@ def redir():
 if __name__ == '__main__':
 	app.debug = True
 	Read_Data.preprocess()
-	#mit_parse.preprocess()
 	app.run()

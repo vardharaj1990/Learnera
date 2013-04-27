@@ -97,7 +97,7 @@ class Database():
 	Insert into user_relevance Collection
 	'''
 	def insert_user_relevance(self, userid, courseid):
-		self.db.user_relevance({"uid":userid, "course": courseid})
+		self.db.user_relevance.insert({"uid":userid, "course": courseid})
 	
 	'''
 	Find relevant courses for a user
@@ -109,5 +109,23 @@ class Database():
 			rel.append(c['course'])
 		
 		return list(set(rel))
+	
+	'''
+	Insert <query, isbn> pair.
+	'''
+	def insert_isbn(self,query, isbn):
+		if self.db.isbn.find({"query" : query}).count() < 1:
+			self.db.isbn.insert({"query":query, "isbn":isbn})
+	
+	'''
+	Find <query,isbn> pair from DB
+	'''
+	def find_isbn(self, query):
+		isbn = []
+		if self.db.isbn.find({"query" : query}).count() != 0:
+			return self.db.isbn.find({"query" : query})[0]
+		else: 
+			return None
+		
 
 

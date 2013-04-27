@@ -69,19 +69,11 @@
 					  	$ul.append($li);
 				  	}
 			  });
-      			
-      	});
-		
-		$.getJSON($SCRIPT_ROOT + '/_search_isbn', 
-		  {
-			a: $('input[name="a"]').val()
-		  }, function(data) 
-		  {
-			  	$('#book_content').empty();
-			  	var $ul = $('<div style=width:inherit;>');
-				$('#book_content').append($ul);
-				$.each(data.result, function(i,l)
-			  	{
+			  $('#book_content').empty();
+			  var $ul = $('<div style=width:inherit;>');
+			  $('#book_content').append($ul);			  
+			  $.each(data.result2, function(i,l)
+			  {
 			  	
 			  		var link;
 			  		$.each(l, function(ind,item)
@@ -99,7 +91,9 @@
 				  		$ul.append($li);
 				  	});
 				 });
-			}); 
+      			
+      	});
+		
 				  	
       	return false;
     };
