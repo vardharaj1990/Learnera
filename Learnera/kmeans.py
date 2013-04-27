@@ -53,90 +53,63 @@ if len(args) > 0:
 
 ###############################################################################
 # Load some categories from the training set
-'''
-categories = [
-    'alt.atheism',
-    'talk.religion.misc',
-    'comp.graphics',
-    'sci.space',
-]
-# Uncomment the following to do the analysis on all the categories
-#categories = None
 
-print("Loading 20 newsgroups dataset for categories:")
-print(categories)
+def getLabels(coursedict):
+    training_documents = list()
+    coursekeys = list()
+    for key in coursedict:
+            training_documents.append(coursedict[key] + '' + key)
+            coursekeys.append(key)
 
-dataset = fetch_20newsgroups(subset='all', categories=categories,
-                             shuffle=True, random_state=42)
+    true_k = 24
 
-print("%d documents" % len(dataset.data))
-print("%d categories" % len(dataset.target_names))
-print()
-'''
-coursedict = Read_Data.process_courses()
-
-training_documents = list()
-for key in coursedict:
-	training_documents.append(coursedict[key] + '' + key)
-	
-
-#labels = dataset.target
-true_k = 24
-
-print("Extracting features from the training dataset using a sparse vectorizer")
-t0 = time()
-if opts.use_hashing:
-    if opts.use_idf:
-        # Perform an IDF normalization on the output of HashingVectorizer
-        hasher = HashingVectorizer(n_features=opts.n_features,
-                                   stop_words='english', non_negative=True,
-                                   norm=None, binary=False)
-        vectorizer = Pipeline((
-            ('hasher', hasher),
-            ('tf_idf', TfidfTransformer())
-        ))
+    print("Extracting features from the training dataset using a sparse vectorizer")
+    t0 = time()
+    if opts.use_hashing:
+        if opts.use_idf:
+            # Perform an IDF normalization on the output of HashingVectorizer
+            hasher = HashingVectorizer(n_features=opts.n_features,
+                                       stop_words='english', non_negative=True,
+                                       norm=None, binary=False)
+            vectorizer = Pipeline((
+                ('hasher', hasher),
+                ('tf_idf', TfidfTransformer())
+            ))
+        else:
+            vectorizer = HashingVectorizer(n_features=opts.n_features,
+                                           stop_words='english',
+                                           non_negative=False, norm='l2',
+                                           binary=False)
     else:
-        vectorizer = HashingVectorizer(n_features=opts.n_features,
-                                       stop_words='english',
-                                       non_negative=False, norm='l2',
-                                       binary=False)
-else:
-    vectorizer = TfidfVectorizer(max_df=0.5, max_features=opts.n_features,
-                                 stop_words='english', use_idf=opts.use_idf)
-X = vectorizer.fit_transform(training_documents)
+        vectorizer = TfidfVectorizer(max_df=0.5, max_features=opts.n_features,
+                                     stop_words='english', use_idf=opts.use_idf)
+    X = vectorizer.fit_transform(training_documents)
 
-print("done in %fs" % (time() - t0))
-print("n_samples: %d, n_features: %d" % X.shape)
-print()
+   # print("done in %fs" % (time() - t0))
+   # print("n_samples: %d, n_features: %d" % X.shape)
+    #print()
 
 
-###############################################################################
-# Do the actual clustering
+    ###############################################################################
+    # Do the actual clustering
 
-if opts.minibatch:
-    km = MiniBatchKMeans(n_clusters=true_k, init='k-means++', n_init=1,
-                         init_size=1000,
-                         batch_size=1000, verbose=1)
-else:
-    km = KMeans(n_clusters=true_k, init='k-means++', max_iter=100, n_init=1,
-                verbose=1)
+    if opts.minibatch:
+        km = MiniBatchKMeans(n_clusters=true_k, init='k-means++', n_init=1,
+                             init_size=1000,
+                             batch_size=1000, verbose=1)
+    else:
+        km = KMeans(n_clusters=true_k, init='k-means++', max_iter=100, n_init=1,
+                    verbose=1)
 
-print("Clustering sparse data with %s" % km)
-t0 = time()
-km.fit(X)
+    print("Clustering sparse data with %s" % km)
+    t0 = time()
+    km.fit(X)
+
+    print(km.labels_)
 
 
-print("done in %0.3fs" % (time() - t0))
-print(km.labels_)
-return km.labels_
-	
-'''
-print("Homogeneity: %0.3f" % metrics.homogeneity_score(labels, km.labels_))
-print("Completeness: %0.3f" % metrics.completeness_score(labels, km.labels_))
-print("V-measure: %0.3f" % metrics.v_measure_score(labels, km.labels_))
-print("Adjusted Rand-Index: %.3f"
-      % metrics.adjusted_rand_score(labels, km.labels_))
-print("Silhouette Coefficient: %0.3f"
-      % metrics.silhouette_score(X, labels, sample_size=1000))
-'''
-print()
+    clusterdict = defaultdict(int)
+    for i in range(0,len(km.labels_)):
+        clusterdict[coursekeys[i]] = km.labels_[i]
+
+    return clusterdict
