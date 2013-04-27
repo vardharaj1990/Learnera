@@ -7,10 +7,10 @@ import json
 import urllib2
 import simplejson
 
-def func():
+def deflist():
 	return defaultdict(list)
 
-categories = defaultdict(func)
+categories = defaultdict(deflist)
 categoryMap = defaultdict(list)
 categoryIds  = defaultdict(str)
 
@@ -64,6 +64,7 @@ def getYoutubeDataDict():
 
 
 if __name__ == "__main__":
+         print getYoutubeDataDict()
          #getYoutubeData()
          #f = open('youtube.txt','r')
          
