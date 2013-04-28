@@ -30,8 +30,10 @@ def search():
 	for course in res:
 		if course[0] == 'coursera':
 			attrib = db.find_course_attrib(course[1])
-		else:
+		elif course[0] == 'mit':
 			attrib = db.find_course_attrib(course[8])
+		else:
+			attrib = db.find_course_attrib(course[4])
 		course.insert(3,attrib['basic'])
 		course.insert(4,attrib['advanced'])
 	
