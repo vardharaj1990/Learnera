@@ -9,6 +9,7 @@ import webbrowser
 import dbms
 import requests
 import LinkedIn
+import copy
 
 @app.route('/_search')
 def search():
@@ -23,14 +24,22 @@ def search():
 	for word in b:
 		query = query + word + ' '
 	'''
+	temp = []
+	res = []
+	res2 = []
+	
 	db = dbms.Database()
 	res = db.find_queryresults(query)
-	
 	if  res == None:
-		print "res None"
-		res = Read_Data.work(query)
-	db.insert_queryresults(query, res)
-	for course in res:
+		res2 = Read_Data.work(query)
+		#print res2
+		temp = copy.deepcopy(res2)
+	else:
+		temp = copy.deepcopy(res)
+	
+	db.insert_queryresults(query, temp)
+	
+	for course in temp:
 		if course[0] == 'coursera':
 			attrib = db.find_course_attrib(course[1])
 		elif course[0] == 'mit':
@@ -39,9 +48,10 @@ def search():
 			attrib = db.find_course_attrib(course[4])
 		course.insert(3,attrib['basic'])
 		course.insert(4,attrib['advanced'])
+	
 	ret = isbn.getisbnData(query)
 	
-	return jsonify(result = res, result2 = ret)
+	return jsonify(result = temp, result2 = ret)
 
 @app.route('/_relevant')
 def relevant():
