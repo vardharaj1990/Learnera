@@ -32,6 +32,14 @@ class Database():
 			self.db.users.insert({"uid": ret['id'], "info": ret})
 	
 	'''
+	Update interests of a user
+	'''
+	def update_user_interests(self, ID, interest):
+		ss = self.db.users.find({"uid":ID})[0]['info']['interests']
+		ss += ', ' + interest
+		self.db.users.update({"uid":ID}, {"$set": {"info.interests":ss}})
+	
+	'''
 	Find user's connections
 	'''	
 	def find_connections(self, userid):
