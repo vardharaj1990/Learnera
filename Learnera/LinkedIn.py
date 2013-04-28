@@ -21,7 +21,7 @@ class Auth():
 		self.authentication.authorization_code = code
 		self.authentication.get_access_token()
 		ret = {}
-		ret = self.application.get_profile(selectors=['id', 'first-name', 'last-name', 'location', 'distance', 'num-connections', 'skills', 'educations', 'interests', 'courses', 'following', 'related-profile-views', 'job-bookmarks', 'certifications'])
+		ret = self.application.get_profile(selectors=['id', 'first-name', 'last-name', 'location', 'distance', 'num-connections', 'skills', 'educations', 'interests', 'courses', 'following', 'related-profile-views', 'job-bookmarks', 'certifications', 'connections'])
 		self.user_id = ret['id']
 		self.user_name = ret['firstName']
 		write_to_db(ret)

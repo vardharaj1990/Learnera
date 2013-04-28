@@ -30,6 +30,13 @@ class Database():
 	def insert_user(self, ret):
 		if self.db.users.find({"uid" : ret['id']}).count() < 1: 
 			self.db.users.insert({"uid": ret['id'], "info": ret})
+	
+	'''
+	Find user's connections
+	'''	
+	def find_connections(self, userid):
+		if self.db.users.find({"uid":userid}).count() > 0:
+			return self.db.users.find({"uid": userid})[0]['info']['connections']['values']
 		
 	'''
 	Insert Course Info
@@ -148,6 +155,7 @@ class Database():
 	'''
 	def find_queryresults(self, query):
 		if self.db.queryresults.find({"query" : query}).count() != 0:
+			#print "query already issued"
 			return self.db.queryresults.find({"query" : query})[0]['results']
 		else:
 			return None
