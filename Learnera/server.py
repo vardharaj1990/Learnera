@@ -23,6 +23,7 @@ def search():
 	db = dbms.Database()
 	res = db.find_queryresults(query)
 	
+	db.insert_queryresults(query, res)
 	if  res == None:
 		print "res None"
 		res = Read_Data.work(query)
@@ -40,7 +41,6 @@ def search():
 
 	ret = isbn.getisbnData(query)
 	
-	db.insert_queryresults(query, res)
 	return jsonify(result = res, result2 = ret)
 
 @app.route('/_relevant')
