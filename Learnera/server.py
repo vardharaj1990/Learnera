@@ -26,11 +26,12 @@ def search():
 	db = dbms.Database()
 	res = db.find_queryresults(query)
 	
-	db.insert_queryresults(query, res)
 	if  res == None:
 		print "res None"
 		res = Read_Data.work(query)
-	
+	db.insert_queryresults(query, res)
+	print res
+	raw_input()
 	for course in res:
 		if course[0] == 'coursera':
 			attrib = db.find_course_attrib(course[1])
@@ -38,8 +39,10 @@ def search():
 			attrib = db.find_course_attrib(course[8])
 		else:
 			attrib = db.find_course_attrib(course[4])
+		print course
 		course.insert(3,attrib['basic'])
 		course.insert(4,attrib['advanced'])
+		print course
 	
 
 	ret = isbn.getisbnData(query)
