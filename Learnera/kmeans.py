@@ -61,7 +61,7 @@ def getLabels(coursedict):
             training_documents.append(coursedict[key] + '' + key)
             coursekeys.append(key)
 
-    true_k = 200
+    true_k = 300
 
     #print("Extracting features from the training dataset using a sparse vectorizer")
     t0 = time()
@@ -81,7 +81,7 @@ def getLabels(coursedict):
                                            non_negative=False, norm='l2',
                                            binary=False)
     else:
-        vectorizer = TfidfVectorizer(max_df=0.5, max_features=opts.n_features,
+        vectorizer = TfidfVectorizer(max_df=0.2, max_features=opts.n_features,
                                      stop_words='english', use_idf=opts.use_idf)
     X = vectorizer.fit_transform(training_documents)
 

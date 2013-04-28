@@ -13,6 +13,8 @@ import LinkedIn
 @app.route('/_search')
 def search():
 	a = request.args.get('a', 0, type=str)
+	query = a
+	'''
 	b = [spell_check.correct(x) for x in a.split()]
 	actual_q = ''
 	for word in a.split():
@@ -20,6 +22,7 @@ def search():
 	query = ''
 	for word in b:
 		query = query + word + ' '
+	'''
 	db = dbms.Database()
 	res = db.find_queryresults(query)
 	

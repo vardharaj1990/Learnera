@@ -288,8 +288,8 @@ def post_process(results,query_word):
 	score = defaultdict(int)
 	for r in results:
 		score[r[0]] += course_text[r[0]].count(query_word)
-		for word in query_word.split():
-			score[r[0]] += course_text[r[0]].count(word) * (float (1)/ len(query_word.split()))
+		#for word in query_word.split():
+		#	score[r[0]] += course_text[r[0]].count(word) * (float (1)/ len(query_word.split()))
 	
 	score = sorted(score.items(), reverse = True, key=lambda x : x[1])
 	improved_results = []
@@ -315,8 +315,8 @@ def search(query_word):
 	
 	
 						
-	results= sorted(q_result.items(), reverse = True, key=lambda x : x[1])
-	
+	results= sorted(q_result.items(), reverse = True, key=lambda x : x[1])	
+			
 	imp_results = post_process(results,query_word)
 	
 	for r in imp_results:
@@ -326,8 +326,8 @@ def search(query_word):
 	
 
 	details_course = []
-	for r in final_result[0:7]:
-		if len(course_details[r][3]) > 197:
+	for r in final_result[0:5]:
+		if isinstance(course_details[r][3], basestring) and len(course_details[r][3]) > 197:
 			course_details[r][3] = course_details[r][3][:194] + '...'
 		details_course.append(course_details[r])
 	return details_course
