@@ -1,6 +1,8 @@
 '''
 Database Related functions
 MongoDB operations
+
+Collections: users, taken, courses, nonrelevant, coursemeta, user_relevance, isbn
 '''
 import pymongo
 
@@ -18,7 +20,7 @@ class Database():
 	'''		
 	def find_user(self, ID):
 		if self.db.users.find({"uid": ID}):
-			return self.db.users.find({"uid": ID})[0]
+			return self.db.users.find({"uid": ID})[0]['info']
 		else:
 			return -1
 		
@@ -40,7 +42,7 @@ class Database():
 	'''
 	def find_course(self, uid):
 		if self.db.courses.find({"uid": ID}) != None:
-			return self.db.courses.find({"uid": ID})[0]
+			return self.db.courses.find({"uid": ID})[0]['info']
 		else:
 			return -1
 		
@@ -94,6 +96,13 @@ class Database():
 		return users
 	
 	'''
+	Find attrib count for a course
+	'''
+	def find_course_attrib(self, courseid):
+		attrib = {"basic": self.db.coursemeta.find({"courseid":courseid, "user.attrib":"basic"}).count(),
+					"advanced": self.db.coursemeta.find({"courseid":courseid, "user.attrib":"advanced"}).count()}
+		return attrib
+	'''
 	Insert into user_relevance Collection
 	'''
 	def insert_user_relevance(self, userid, courseid):
@@ -123,9 +132,23 @@ class Database():
 	def find_isbn(self, query):
 		isbn = []
 		if self.db.isbn.find({"query" : query}).count() != 0:
-			return self.db.isbn.find({"query" : query})[0]
+			return self.db.isbn.find({"query" : query})[0]['isbn']
 		else: 
 			return None
-		
-
+	
+	'''
+	Insert <query, results> pair.
+	'''
+	def insert_queryresults(self, query, res):
+		if self.db.queryresults.find({"query":query}).count() < 1: 
+			self.db.queryresults.insert({"query":query, "results":res})
+	
+	'''
+	Find results for a given query.
+	'''
+	def find_queryresults(self, query):
+		if self.db.queryresults.find({"query" : query}).count() != 0:
+			return self.db.queryresults.find({"query" : query})[0]['results']
+		else:
+			return None
 

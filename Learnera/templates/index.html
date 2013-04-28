@@ -2,7 +2,8 @@
 {% block body %}
 <script type=text/javascript>
   $(function() {  
-  
+  var uid = '{{uid}}';
+  alert(uid);
     var submit_form = function(e) 
     {
 		  $.getJSON($SCRIPT_ROOT + '/_search', 
@@ -24,13 +25,18 @@
 					  		if (ind == 0)
 					  			return true;
 					  		var $li = $('<div style=width:inherit;>');
-					  		if (ind == 5)
+					  		if (ind == 7)
 					  			$li.append('<img width=120 src=' + item + '>');
 					  		else if (ind == 1)
 					  		{
 					  			link = 'https://www.coursera.org/course/' + item;
 					  			course_id = item;
-					  		}					  			
+					  		}
+					  		else if (ind == 3)
+					  			$li.append('Basic Cnt: ' + item);
+					  		else if (ind == 4)
+					  			$li.append('Advanced Cnt: ' + item);					  			
+					  			
 					  		else if (ind == 2)
 					  			$li.append('<a href =' + link + ' target=_blank>' + item);
 					  		else 
@@ -39,6 +45,8 @@
 					  	});
 					  	$li = $('<div style=width:inherit;>');
 					  	$li.append('<input type=button class=rel-button value = NR ID=' + course_id + ' ></input>');
+					  	$li.append('<input type=button class=basic value = basic ID=' + course_id + ' ></input>');
+					  	$li.append('<input type=button class=advanced value = advanced ID=' + course_id + ' ></input>');
 					  	$ul.append($li);
 					  	
 				  	}
@@ -56,9 +64,14 @@
 					  			link = item;
 					  		else if (ind == 2)
 					  			$li.append('<a href =' + link + ' target=_blank>' + item);
-					  		else if (ind == 7)
+					  		else if (ind == 3)
+					  			$li.append('Basic Cnt: ' + item);					  			
+					  		else if (ind == 4)
+					  			$li.append('Advanced Cnt: ' + item);					  			
+
+					  		else if (ind == 9)
 					  			$li.append('<a href= ' + item + ' target=_blank><img width=20 height=20 src=http://ridiculousfish.com/hexfiend/images/download_square.png></img></a>');
-					  		else if (ind == 8)
+					  		else if (ind == 10)
 					  			course_id = item
 					  		else
 					  			$li.append(item);
@@ -66,6 +79,8 @@
 					  	});
 					  	$li = $('<div style=width:inherit;>');
 					  	$li.append('<input type=button class=rel-button value = NR ID=' + course_id + ' ></input>');
+					  	$li.append('<input type=button class=basic value = basic ID=' + course_id + ' ></input>');
+					  	$li.append('<input type=button class=advanced value = advanced ID=' + course_id + ' ></input>');
 					  	$ul.append($li);
 				  	}
 			  });
@@ -101,16 +116,46 @@
 	  	$(".rel-button").live("click", function() 
 	  	{
 			var buttonId = $(this).attr("id");
+			var userid = '{{uid}}';
 			$.getJSON($SCRIPT_ROOT + '/_relevant',
 			{
 				a: buttonId,
-				b: $('input[name="a"]').val()
+				b: $('input[name="a"]').val(),
+				uid: userid
+			}, function(data)
+			{
+				alert(data.result);
+			});
+	});
+
+	  	$(".basic").live("click", function() 
+	  	{
+			var buttonId = $(this).attr("id");
+			$.getJSON($SCRIPT_ROOT + '/_basic',
+			{
+				c: buttonId,
+				d: $('input[name="a"]').val(),
+				uid: '{{uid}}'
 			}, function(data)
 			{
 				alert(data.result);
 			});
 	});
   	
+	  	$(".advanced").live("click", function() 
+	  	{
+			var buttonId = $(this).attr("id");
+			$.getJSON($SCRIPT_ROOT + '/_advanced',
+			{
+				c: buttonId,
+				d: $('input[name="a"]').val(),
+				uid: '{{uid}}'
+			}, function(data)
+			{
+				alert(data.result);
+			});
+	});
+
     $('a#calculate').bind('click', submit_form);
    
 
@@ -122,13 +167,9 @@
 
     $('input[name=a]').focus();
   
- });
-  
-   
- 
-      	
+ });      	
 </script>
-<h1>What do you want to learn today?</h1>
+<h1>What do you want to learn today {{username}}?</h1>
 <p>
   <input type=text size=20 name=a> 
 <p><a href=# id=calculate>Search!</a>
