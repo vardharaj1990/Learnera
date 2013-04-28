@@ -61,9 +61,9 @@ def getLabels(coursedict):
             training_documents.append(coursedict[key] + '' + key)
             coursekeys.append(key)
 
-    true_k = 24
+    true_k = 200
 
-    print("Extracting features from the training dataset using a sparse vectorizer")
+    #print("Extracting features from the training dataset using a sparse vectorizer")
     t0 = time()
     if opts.use_hashing:
         if opts.use_idf:
@@ -96,12 +96,12 @@ def getLabels(coursedict):
     if opts.minibatch:
         km = MiniBatchKMeans(n_clusters=true_k, init='k-means++', n_init=1,
                              init_size=1000,
-                             batch_size=1000, verbose=1)
+                             batch_size=1000, verbose=0)
     else:
-        km = KMeans(n_clusters=true_k, init='k-means++', max_iter=100, n_init=1,
-                    verbose=1)
+        km = KMeans(n_clusters=true_k, init='k-means++', max_iter=500, n_init=1,
+                    verbose=0)
 
-    print("Clustering sparse data with %s" % km)
+    #print("Clustering sparse data with %s" % km)
     t0 = time()
     km.fit(X)
 

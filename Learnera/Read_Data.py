@@ -8,12 +8,15 @@ import requests
 import pprint
 import random
 import urllib
+import pickle
+import kmeans
 
 def func():
     return defaultdict(float)
 
 def func2():
     return defaultdict(func())
+
 
 links = set()
 social_links = set()
@@ -29,7 +32,7 @@ query = defaultdict(float)
 q_result = defaultdict(float)
 centroid = defaultdict(func)
 course_details = defaultdict(list)
-
+coursedict = defaultdict(int)
 
 def read_json():
     f = open("fullcourses.txt", 'w')
@@ -101,8 +104,8 @@ def process_courses():
 	content = f.readlines()
 	for line in content:
 		course = json.loads(line)
-		course_text[course['short_name']] = course['name']
-		course_text[course['short_name']] += course['about_the_course']
+		course_text[course['short_name']] = course['name'] + ' '
+		course_text[course['short_name']] += course['about_the_course'] + ' '
 		#course_text[course['short_name']] += course['short_description'] + course['description']
 		course_text[course['short_name']] = re.sub('<[^<]+?>|\\n', ' ', course_text[course['short_name']])
 		tok = re.findall(r'\w+',course_text[course['short_name']],re.UNICODE)
@@ -122,6 +125,7 @@ def process_courses():
 		course_details[course['short_name']] = details
 		
 	f.close()
+	
 	
 	f = open("mit_ocw.txt", 'rU')
 	content = f.readlines()
@@ -179,39 +183,66 @@ def process_courses():
 				details.append('')
 				
 			details.append(courses['UniqueID'])
-			'''
-
-			if 'CourseLanguage' in courses:
-				details.append(courses['CourseLanguage'])
-			else:
-				details.append('')
 			
-			
-			if 'CourseSection' in courses:
-				details.append(courses['CourseSection'])
-			else:
-				details.append('')
-			'''
 			
 			clusters[courses['CourseSection']].add(courses['UniqueID'])
 			course_details[courses['UniqueID']] = details
-			course_text[courses['UniqueID']] = courses['Title'] + courses['Description']
+			course_text[courses['UniqueID']] = courses['Title'] + ' ' + courses['Description']
 			tok = re.findall(r'\w+',course_text[courses['UniqueID']],re.UNICODE)
 			tok = [x.lower() for x in tok]
 			tf_add(tok,courses['UniqueID'])
 			idf_add(tok)
+	f.close()
+	
+	
+	f = open("youtube.json", 'rU')
+	content = f.readlines()
+	cat_id = 0
+	for line in content:
+		data = json.loads(line)
+		key = 'entry'
+		if key in data['feed']:     
+			for entry in data['feed']['entry']:
+				title = entry['title']['$t']
+				summary = entry['summary']['$t']
+				plid = entry['yt$playlistId']['$t']
+				playlistlink = 'http://www.youtube.com/playlist?list=' + plid
+				if len(summary.split()) < 10:
+					continue
+				details = []
+				plid = 'y' + plid
+				clusters[cat_id].add(plid)
+				course_text[plid] = title + ' ' + summary
+				details.append('youtube')
+				details.append(playlistlink)
+				details.append(title)
+				details.append(summary)
+				details.append(plid)
+				course_details[plid] = details
+				tok = re.findall(r'\w+', title + ' ' + summary ,re.UNICODE)
+				tok = [x.lower() for x in tok]
+				tf_add(tok,plid)
+				idf_add(tok)
 		
+		cat_id += 1
+	f.close()
+	
+	coursedict = kmeans.getLabels(course_text)
+	clusters.clear()
+	for course in coursedict:
+		clusters[coursedict[course]].add(course)
 		
+def ret_categories():
+	return clusters
+			
 def clustering():
 	global centroid
 	for c in clusters:
-		if len(c) == 0:
-			continue
 		for course in clusters[c]:
 			for terms in course_tfidf[course]:
 				centroid[c][terms] += course_tfidf[course][terms]
 		for t in centroid[c]:
-			centroid[c][t] = centroid[c][t] / len(c)
+			centroid[c][t] = centroid[c][t] / len(clusters[c])
 			 
 	
 def process_query(q):
@@ -252,7 +283,21 @@ def find_closest_cluster():
     d_list.sort(key=lambda x: x[1], reverse = True)
     return d_list
 
-def search():
+
+def post_process(results,query_word):
+	score = defaultdict(int)
+	for r in results:
+		score[r[0]] += course_text[r[0]].count(query_word)
+		for word in query_word.split():
+			score[r[0]] += course_text[r[0]].count(word) * (float (1)/ len(query_word.split()))
+	
+	score = sorted(score.items(), reverse = True, key=lambda x : x[1])
+	improved_results = []
+	for item in score:
+		improved_results.append(item[0])
+	return improved_results
+
+def search(query_word):
 	global query
 	global course_tfidf
 	global q_result
@@ -262,19 +307,28 @@ def search():
 	d_list = find_closest_cluster()
 	cnt = 1
     
-	for c in d_list:
+	for c in d_list[0:10]:
 		for doc in clusters[c[0]]:
 			for key in query:
 				if course_tfidf[doc][key] != 0:
-					q_result[doc] += query[key] * course_tfidf[doc][key]
-		results= sorted(q_result.items(), reverse = True, key=lambda x : x[1])
-		for r in results:
-			if r[0] not in final_result:
-				final_result.append(r[0])
-		results = []
+					q_result[doc] += query[key] * course_tfidf[doc][key]	
+	
+	
+						
+	results= sorted(q_result.items(), reverse = True, key=lambda x : x[1])
+	
+	imp_results = post_process(results,query_word)
+	
+	for r in imp_results:
+		final_result.append(r)
+	results = []
+	
+	
 
 	details_course = []
-	for r in final_result[0:10]:
+	for r in final_result[0:7]:
+		if len(course_details[r][3]) > 197:
+			course_details[r][3] = course_details[r][3][:194] + '...'
 		details_course.append(course_details[r])
 	return details_course
 
@@ -285,9 +339,9 @@ def preprocess():
 	calc_tfidf()
 	clustering()
 	
-def work(query):
-	process_query(query)
-	p = search()
+def work(query_word):
+	process_query(query_word)
+	p = search(query_word)
 	return p
 
 
