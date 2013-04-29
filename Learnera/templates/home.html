@@ -1,0 +1,268 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<script type=text/javascript>
+
+var userid = '{{ uid }}';
+var uname = '{{ username }}';
+
+/*$(function() { 
+
+	var submit_form = function(e) 
+    {
+		  alert(this.id);
+		  alert($("#calculate h2").html());
+		  $.getJSON($SCRIPT_ROOT + '/_search', 
+		  {
+			
+			a: $('h2[name="b"]').val()
+		  }, function(data) 
+		  {});
+		
+				  	
+      	return false;
+    };
+
+	$('a').bind('click', submit_form);
+	
+ });
+
+*/
+$('a').live("click", function() 
+	  	{
+			var buttonId = $(this).attr("id");
+			//alert(buttonId);
+		  buttonId = "#" + buttonId + " " + "h2";
+		  $.getJSON($SCRIPT_ROOT + '/_searchredir', 
+		  {
+			uid: userid,
+			username: uname,
+			query: $(buttonId).html()
+		  }, function(data) 
+		  {});
+      	return false;
+	});
+
+$("#search-btn").live("click", function() 
+	  	{
+			var buttonId = $(this).attr("id");
+			newinterest = $('input[name="a"]').val();
+			var $li=  $('<li> <a href="#" id=' + newinterest + ' ><span class="ca-icon">' + newinterest
+						+ '</span><div class="ca-content"> <h2 class="ca-main" >'
+						+ newinterest 
+						+ '</h2><h3 class="ca-sub">'
+						+ newinterest
+						+ '</h3></div></a></li>');
+			
+			$('#bubbles').append($li);
+			$.getJSON($SCRIPT_ROOT + '/_addinterest',
+			{
+				b: $('input[name="a"]').val()
+			}, function(data)
+			{
+				
+				
+				
+			});
+	});
+
+
+
+
+
+
+/*var uid = '{{uid}}';
+alert(uid);
+var interest = '{{interest}}';
+
+var newarray = ${interest}.html();
+alert(newarray);
+alert(interest);
+var interest = interest.replace(/\,/g,"");
+var interest = interest.replace(/\ /g,"");
+var inarray  = interest.split("&#39;");
+
+alert(inarray);
+$(document).ready(function() {
+  // Handler for .ready() called.
+	  	var $ul = $('<ul class="ca-menu">');
+		$('#maincontent').empty();
+		$('#maincontent').append($ul);
+	
+		$.each(inarray, function(i,l)
+		{
+			if( l == '\,\,') {
+			
+				return;
+			}
+			
+			if( l == '\[') {
+			
+				return;
+			}
+			
+			
+			if( l == '\]') {
+			
+				return;
+			}
+			
+			var $li=  $('<li> <a href="#"><span class="ca-icon">' + l
+						+ '</span><div class="ca-content"> <h2 class="ca-main">'
+						+ l 
+						+ '</h2><h3 class="ca-sub">'
+						+ l
+						+ '</h3></div></a></li>');
+			
+			$ul.append($li);
+		});
+});
+*/
+	  	
+       	
+</script>
+
+<!--start container -->
+<div id="container">
+
+<header>
+    <nav>   
+	<!---
+      <div id="logo"><a href="#"><img src="https://lh3.googleusercontent.com/VPQNX56EsZ8yD2suYQqSLK5Zfa3VIwgUqZ08km9Kn-Tq85j7NsjX0gd2DzO6fZ3YfQ=s190" alt="Logo here" /></a>      </div>
+     ---> 
+    <div id="search-top">
+	   
+   
+  <input type="text" onFocus="if(this.value=='Search')this.value='';" onBlur="if(this.value=='')this.value='Search';" value="Search" name=a id="search-field"/>
+  <input type="submit" value="Add Interest" id="search-btn"/>
+ 
+      </div>  
+	  <!---
+      <div id="nav_social"><a href="#"><img src="/static/images/facebook_32.png" alt="Become a fan" width="32" height="32" /></a><a href="#"><img src="images/twitter_32.png" alt="Follows on Twitter" /></a><a href="#"><img src="images/linkedin_32.png" alt="Linked in" /></a><a href="#"><img src="images/email_32.png" alt="Contact" width="32" height="32" /></a> </div>
+	   --->
+  </nav>
+ 
+</header>
+
+<div class="content" id = "maincontent">
+
+          <ul class="ca-menu" id="bubbles">
+		 
+		   {% for entry in entries %}
+			<li> 
+					<a href="#" id={{entry.title}}>
+                        <!--    <span class="ca-icon">{{ entry.text}}</span> -->
+                            <div class="ca-content">
+                                <h2 class="ca-main" name=b id = {{entry.title}}>{{ entry.text }}</h2>
+                                <h3 class="ca-sub">{{ entry.text }}</h3>
+                            </div>
+                    </a>                   
+			{% else %}
+			<li><em>Unbelievable.  No entries here so far</em>
+			{% endfor %}
+              
+            </ul>
+  <!--star main 
+    
+    <main>    
+      <div class="abox">
+      <figure>
+      <fcapion>
+     <h1>Communication Graphic... </h1>
+      </fcaption><a href="#"></a><a href="#"><img src="/static/images/bror.jpg" alt="I love graphic" width="289" height="175" /></a></figure>
+      </div>
+    <div class="abox">
+      <figure>
+      <fcapion>
+      <h1>From the heart Ideas... </h1>
+      </fcaption>
+      <a href="#"><img src="images/nat.jpg" alt="I love graphic" width="287" height="176" /></a>      </figure>
+    </div>
+    <div class="abox">
+      <figure>
+      <fcapion>
+     <h1>Fluid from the thought...</h1>
+      </fcaption><a href="#"></a><a href="#"><img src="/static/images/nas.jpg" alt="I love graphic" width="289" height="178" /></a></figure>
+      </div>   
+    </main>
+    <!--end main -->
+    <!--start middle
+    <middle>    
+      <div class="enter"><P >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non diam in neque blandit commodo. Quisque lobortis sollicitudin nisl pulvinar condimentum. Sed est diam, hendrerit id dignissim vel, adipiscing interdum elit. Vivamus a laoreet eros. Pellentesque sollicitudin pretium fermentum.<br></P>
+        <div class="imgteaser">
+<a href="#"><img src="images/p1.png" alt="Todo el Todo" width="413" height="220" /><span class="desc">
+	<strong>TODO 2011 - Lorem Ipsum quntum</strong>
+		Blandit turpis patria euismod at iaceo appellatio, demoveo esse.</span></a></div><div class="btn"> <a href="#">Read More...</a></div>
+      </div>	
+      <div class="section_slogan"><img src="/static/images/quote-right.png" alt="images" /><span class="cursive"> The inspiration is the desire by extension, do you think is right? </span><img src="images/quote-left.png" alt="images" /></div>
+      <div class="middle_box"><h1><img src="/static/images/fav.png" width="16" height="16" /> <a href="#">Resources</a></h1>
+      <ol>
+        <img src="images/dialog-ok.png" width="16" height="16" /> Lorem Ipsum quntum</ol>
+      <ol>
+        <img src="images/dialog-ok.png" width="16" height="16" /> Lorem ipsum dolor sit amet</ol>
+      <ol>
+        <img src="images/dialog-ok.png" width="16" height="16" /> Integer vehicula laoreet purus ac tincidunt</ol>
+     <ol> <img src="images/dialog-ok.png" width="16" height="16" /> distinctly portfolio suite grande architectural five-star.</ol>
+      </div>
+      <div class="middle_box"><h1><img src="images/fav.png" width="16" height="16" /> <a href="#">Blogs</a></h1>
+        <p><img src="images/dialog-ok.png" width="16" height="16" /> Recent Post</p>
+        <ol>
+        <img src="images/dialog-ok.png" width="16" height="16" /> Lorem Ipsum quntum
+        </ol>
+      <ol>
+        <img src="images/dialog-ok.png" width="16" height="16" /> Lorem ipsum dolor sit amet
+      </ol>
+      <ol> <img src="images/dialog-ok.png" width="16" height="16" /> distinctly portfolio suite grande architectural five-star.</ol>
+      </div>
+      <div class="middle_box">
+        <h1><img src="images/fav.png" width="16" height="16" /> <a href="#">Design </a></h1>
+        <img src="images/dialog-ok.png" width="16" height="16" /> Lorem Ipsum quntum</ol>
+      <ol>
+        <img src="images/dialog-ok.png" width="16" height="16" /> Lorem ipsum dolor sit amet</ol>
+      <ol>
+        <img src="images/dialog-ok.png" width="16" height="16" /> Integer vehicula laoreet purus ac tincidunt</ol>
+     <ol> <img src="images/dialog-ok.png" width="16" height="16" /> distinctly portfolio suite grande architectural five-star.</ol>
+      </div>
+    </middle>
+</div>
+<!--end middle -->
+<!--start footer
+<footer>  
+  <div id="footer">
+  <div id="footerleft">
+      <h2>Imediacreatives</h2>
+      <ul>
+        <li><a href="http://www.imediacreatives.it">Css3 Kitesurf</a></li>
+        <li><a href="..."> Layout Design Gardenfolio</a></li>
+        <li><a href="..."> BlueBand</a></li>
+      </ul>
+    </div>
+    <div id="footermiddle">
+      <h2>User Comments</h2>
+      <ul>
+        <li><a href="...">SWF XLM Sldeshow</a></li>
+        <li><a href="http://www.imediacreatives.it">Michelangelo</a></li>
+        <li><a href="...">Another Templates Principato</a></li>
+      </ul>
+    </div>
+    <div id="footerright">
+      <h2>Design & Project</h2>
+      <ul>
+        <li><a href="http://www.imediacreatives.it">CSS3 Design</a></li>
+        <li><a href="http://www.imediacreatives.it">Psd to CSS </a></li>
+        <li><a href="http://www.imediacreatives.it">Psd to Html5</a></li>
+      </ul>
+    </div>
+    <details>
+<summary>
+<p><a href="http://www.imediacreatives.it" target="_blank">Imediacreatives.it</a>
+  Copyright &copy; yoursite.com -2011.</p></summary><p></p>
+</details>
+    </div>
+</footer>
+<!--end footer -->
+</div>
+
+<!--end container -->
+<!-- Free template distributed by http://freehtml5templates.com -->
+{% endblock %}

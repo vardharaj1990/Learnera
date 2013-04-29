@@ -18,7 +18,7 @@ def search():
 	query = a
 	db = dbms.Database()
 	res = db.find_queryresults(query)
-	
+	print user_id
 	#Important - Deep copy of returned results list
 	if  res == None:
 		res2 = Read_Data.work(query)
@@ -72,14 +72,41 @@ def search():
 	print user_info
 	return jsonify(result = temp, result2 = ret)
 
+@app.route('/_searchredir')
+def searchredir():
+	print "here2"
+	uid = request.args.get('uid', 0, type=str)
+	username = request.args.get('username', 0, type=str)
+	query = request.args.get('query',0, type=str)
+	
+	print uid
+	print username
+	print query
+	
+	url = 'http://localhost:5000/index.html?uid=' + uid + '&username=' + username + '&query=' + query; 
+	webbrowser.open(url)
+	return
+
+@app.route('/index.html')
+def indexhtml():
+	
+	print "here3"
+	uid = request.args.get('uid', 0, type=str)
+	username = request.args.get('username', 0, type=str)
+	query = request.args.get('query',0, type=str)
+	
+	print uid
+	print username
+	print query
+	
+	return	render_template("index.html", uid = uid, username = username, query = query)
+	
 @app.route('/_relevant')
 def relevant():
 	a = request.args.get('a', 0, type=str)
 	b = request.args.get('b', 0, type=str)
 	uid = request.args.get('uid', 0 , type=str)
 	res = 'user '+ uid + 'says ' + str(a) + ' is not relevant for ' + str(b)
-	db = dbms.Database()
-	db.insert_nonrelevant(b, a)
 	return jsonify(result = res)
 
 @app.route('/_basic')
@@ -114,6 +141,14 @@ def login():
 	webbrowser.open(url)  # open this url on your browser
 	return
 
+	
+@app.route('/_addinterest')
+def addinterest():
+	a = request.args.get('b', 0, type=str)
+	print "got b"
+	print a
+	return	
+	
 @app.route('/')
 def home():
 	return render_template('login.html')
@@ -125,8 +160,24 @@ def redir():
 		code = request.args.get('code', '')
 		lauth.get_data(code)
 		uid = lauth.user_id
-		print uid
-		return render_template('index.html', uid = uid, username = lauth.user_name)		
+		db = dbms.Database()
+		userdata = db.find_user(uid)
+		#print db.find_user(uid)
+		interests = userdata['interests'].split(',')
+		
+		
+		for i in range(0,len(interests)):
+			interests[i] = interests[i].strip().encode('ascii','ignore')
+			#print interests[i]
+			
+		print userdata['skills']['values']
+		for skill in userdata['skills']['values']:
+			interests.append(skill['skill']['name'])
+		
+		entries = [dict(title=i, text=interests[i]) for i in range(0,len(interests))]	
+		print interests
+		print entries
+		return render_template('home.html', uid = uid, username = lauth.user_name, interest=interests, entries=entries )		
 	else:
 		print "No Auth Code\n"
 		return render_template('login.html')

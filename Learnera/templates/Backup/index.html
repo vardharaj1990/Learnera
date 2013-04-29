@@ -4,16 +4,13 @@
 
   
  $(function() {  
-  var userid = '{{uid}}';
-  var query = '{{ query }}';
-
+  var uid = '{{uid}}';
+  var interest = '{{interest}}';
 $(document).ready(function() {
   // Handler for .ready() called.
-		  
 		$.getJSON($SCRIPT_ROOT + '/_search', 
 		  {
-			a: query,
-			uid: userid
+			a: interest
 		  }, function(data) 
 		  {
 			  	var $ul = $('<div style=width:inherit;>');
