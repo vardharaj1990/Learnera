@@ -144,9 +144,16 @@ def login():
 	
 @app.route('/_addinterest')
 def addinterest():
+	uid = request.args.get('uid', 0, type=str)
 	a = request.args.get('b', 0, type=str)
-	print "got b"
+	
+	print "got a"
 	print a
+	print "got uid"
+	print uid
+	
+	db = dbms.Database()
+	db.update_user_interests(uid,a)
 	return	
 	
 @app.route('/')

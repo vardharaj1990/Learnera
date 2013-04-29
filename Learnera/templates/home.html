@@ -55,9 +55,11 @@ $("#search-btn").live("click", function()
 						+ '</h3></div></a></li>');
 			
 			$('#bubbles').append($li);
+			alert(userid);
 			$.getJSON($SCRIPT_ROOT + '/_addinterest',
 			{
-				b: $('input[name="a"]').val()
+				uid: userid,
+				b: $('input[name="a"]').val()	
 			}, function(data)
 			{
 				
