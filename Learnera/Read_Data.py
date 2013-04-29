@@ -115,10 +115,11 @@ def process_courses():
 		details = []
 		details.append('coursera')
 		details.append(course['short_name'])
+		details.append('https://www.coursera.org/course/' + course['short_name'])
 		details.append(course['name'])
 		details.append(course['short_description'])
-		details.append(course['universities'][0]['name'])
 		details.append(course['small_icon_hover'])
+		details.append(course['universities'][0]['name'])
 		details.append(course['instructor'])
 		details.append(course['courses'][len(course['courses']) - 1]['duration_string'])
 		details.append(course['courses'][len(course['courses']) - 1]['start_date_string'])
@@ -145,6 +146,8 @@ def process_courses():
 			
 			details.append('mit')
 			
+			details.append(courses['UniqueID'])
+			
 			if 'CourseURL' in courses:
 				details.append(courses['CourseURL'])
 			else:
@@ -161,6 +164,8 @@ def process_courses():
 			else:
 				details.append('')
 			
+			details.append('https://s3.amazonaws.com/hackedu/mitocw150.jpg');
+			
 			if 'InstitutionNameFull' in courses:
 				details.append(courses['InstitutionNameFull'])
 			else:
@@ -170,7 +175,7 @@ def process_courses():
 				details.append(courses['Instructors'])	
 			else:
 				details.append('')
-			
+		
 				
 			if 'TeachingDate' in courses:
 				details.append(courses['TeachingDate'])
@@ -182,7 +187,7 @@ def process_courses():
 			else:
 				details.append('')
 				
-			details.append(courses['UniqueID'])
+			
 			
 			
 			clusters[courses['CourseSection']].add(courses['UniqueID'])
@@ -214,10 +219,11 @@ def process_courses():
 				clusters[cat_id].add(plid)
 				course_text[plid] = title + ' ' + summary
 				details.append('youtube')
+				details.append(plid)
 				details.append(playlistlink)
 				details.append(title)
 				details.append(summary)
-				details.append(plid)
+				details.append('https://lh4.ggpht.com/qfVffxi66yLyt_LYylckIPeCDHxEGt0rMOTmgvLLmjkYklHfJoMUpFswWEUYtCKIWIc=w705')
 				course_details[plid] = details
 				tok = re.findall(r'\w+', title + ' ' + summary ,re.UNICODE)
 				tok = [x.lower() for x in tok]
@@ -227,10 +233,10 @@ def process_courses():
 		cat_id += 1
 	f.close()
 	
-	coursedict = kmeans.getLabels(course_text)
-	clusters.clear()
-	for course in coursedict:
-		clusters[coursedict[course]].add(course)
+	#coursedict = kmeans.getLabels(course_text)
+	#clusters.clear()
+	#for course in coursedict:
+	#	clusters[coursedict[course]].add(course)
 		
 def ret_categories():
 	return clusters

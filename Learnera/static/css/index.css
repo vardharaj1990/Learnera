@@ -1,0 +1,297 @@
+.book-content{
+    float:left;
+    width:45%;
+}
+
+.book-content .book-listings {
+    border-left: 1px solid #CCCCCC;
+}
+.course-content{
+	border-left: 1px solid #CCCCCC;
+    float: left;
+    width:45%;
+    padding-right: 40px;
+}
+
+.book-listings .coursera-catalog-course-listing-box {
+    padding: 20px 10px 20px 15px;
+    position: relative;
+}
+.book-listings .coursera-catalog-course-listing-box:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-right: 1px solid #CCCCCC;
+    margin-right: -1px;
+}
+.book-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-thumbnail {
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.45);
+    float: left;
+    margin-right: 12px;
+    max-width: 90px;
+    max-height: 80px;
+}
+.book-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-text {
+    margin: -12px -40px -6px 20px;
+}
+.book-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-text .coursera-catalog-listing-primary {
+    margin: -3px 0 0;
+}
+.book-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-text .coursera-catalog-listing-primary .coursera-catalog-listing-university {
+    display: block;
+    margin-bottom: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.book-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-text .coursera-catalog-listing-primary .coursera-catalog-listing-coursename {
+    color: #2E67B1;
+    display: block;
+    letter-spacing: 0;
+    line-height: 1.3em;
+    margin: 3px 0;
+}
+.book-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-text .coursera-catalog-listing-primary .coursera-catalog-listing-coursename .coursera-catalog-listing-course-link-box {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+}
+.book-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-text .coursera-catalog-listing-primary .coursera-catalog-listing-instructor {
+    color: #555555;
+    display: block;
+    margin: 0;
+}
+.book-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-secondary {
+    float: right;
+    margin-top: -12px;
+}
+.book-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-secondary .coursera-catalog-listing-secondary-item {
+    margin-bottom: -12px;
+    position: relative;
+    text-align: right;
+    z-index: 2;
+}
+.book-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-secondary .coursera-catalog-listing-secondary-inactive {
+    color: #CCCCCC;
+}
+.book-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-secondary .coursera-catalog-list-secondary-sigtrack {
+    border-radius: 4px 4px 4px 4px;
+    color: #FFFFFF;
+    cursor: pointer;
+    margin-left: -10px;
+    margin-top: 15px;
+    padding: 1px 4px;
+}
+.book-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-secondary .coursera-catalog-listing-secondary-sigtrack-open {
+    background-color: #A9A9A9;
+}
+.book-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-secondary .coursera-catalog-listing-secondary-sigtrack-open:hover {
+    background-color: #DDC000;
+}
+.book-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-secondary .coursera-catalog-listing-secondary-sigtrack-not-open {
+    background-color: #CBCBCB;
+}
+.book-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-secondary .coursera-catalog-listing-secondary-sigtrack-not-open:hover {
+    background-color: #A9A9A9;
+    color: #F7F7F7;
+}
+.row-fluid {
+    width: 100%;
+}
+.row-fluid:before, .row-fluid:after {
+    content: "";
+    display: table;
+    line-height: 0;
+}
+.row-fluid:after {
+    clear: both;
+}
+.row-fluid [class*="span"] {
+    -moz-box-sizing: border-box;
+    display: block;
+    float: left;
+    margin-left: 2.12766%;
+    min-height: 30px;
+}
+.row-fluid [class*="span"]:first-child {
+    margin-left: 0;
+}
+.row-fluid .span1 {
+    width: 6.38298%;
+}
+.row-fluid .span2 {
+    width: 14.8936%;
+}
+.row-fluid .span3 {
+    width: 23.4043%;
+}
+.row-fluid .span4 {
+    width: 31.9149%;
+}
+.row-fluid .span5 {
+    width: 40.4255%;
+}
+.row-fluid .span6 {
+    width: 48.9362%;
+}
+.row-fluid .span7 {
+    width: 57.4468%;
+}
+.row-fluid .span8 {
+    width: 65.9574%;
+}
+.row-fluid .span9 {
+    width: 74.4681%;
+}
+.row-fluid .span10 {
+    width: 82.9787%;
+}
+.row-fluid .span11 {
+    width: 91.4894%;
+}
+.row-fluid .span12 {
+    width: 100%;
+}
+
+
+.coursera-catalog-toolbar {
+    border-bottom: 1px solid #CCCCCC;
+    padding-bottom: 29px;
+}
+
+.coursera-catalog-listings {
+    border-left: 1px solid #CCCCCC;
+    margin-right: -20px;
+}
+.coursera-catalog-listings .coursera-catalog-course-listing-box {
+    border-bottom: 1px solid #CCCCCC;
+    padding: 20px 10px 20px 15px;
+    position: relative;
+}
+.coursera-catalog-listings .coursera-catalog-course-listing-box:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-right: 1px solid #CCCCCC;
+    margin-right: -1px;
+}
+.coursera-catalog-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-thumbnail {
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.45);
+    float: left;
+    margin-right: 12px;
+    max-width: 120px;
+    max-height: 90px;
+}
+.coursera-catalog-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-text {
+    margin: -12px 0 -6px 20px;
+}
+.coursera-catalog-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-text .coursera-catalog-listing-primary {
+    margin: -3px 0 0;
+}
+.coursera-catalog-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-text .coursera-catalog-listing-primary .coursera-catalog-listing-university {
+    display: block;
+    margin-bottom: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.coursera-catalog-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-text .coursera-catalog-listing-primary .coursera-catalog-listing-coursename {
+    color: #2E67B1;
+    display: block;
+    letter-spacing: 0;
+    line-height: 1.3em;
+    margin: 3px 0;
+}
+.coursera-catalog-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-text .coursera-catalog-listing-primary .coursera-catalog-listing-coursename .coursera-catalog-listing-course-link-box {
+    height: 70%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+}
+.coursera-catalog-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-text .coursera-catalog-listing-primary .coursera-catalog-listing-instructor {
+    color: #555555;
+    display: block;
+    margin: 0;
+}
+.coursera-catalog-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-secondary {
+    float: right;
+    margin-top: -12px;
+}
+.coursera-catalog-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-secondary .coursera-catalog-listing-secondary-item {
+    margin-bottom: -12px;
+    position: relative;
+    text-align: right;
+    z-index: 2;
+}
+.coursera-catalog-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-secondary .coursera-catalog-listing-secondary-inactive {
+    color: #CCCCCC;
+}
+.coursera-catalog-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-secondary .coursera-catalog-list-secondary-sigtrack {
+    border-radius: 4px 4px 4px 4px;
+    color: #FFFFFF;
+    cursor: pointer;
+    margin-left: -10px;
+    margin-top: 15px;
+    padding: 1px 4px;
+}
+.coursera-catalog-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-secondary .coursera-catalog-listing-secondary-sigtrack-open {
+    background-color: #A9A9A9;
+}
+.coursera-catalog-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-secondary .coursera-catalog-listing-secondary-sigtrack-open:hover {
+    background-color: #DDC000;
+}
+.coursera-catalog-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-secondary .coursera-catalog-listing-secondary-sigtrack-not-open {
+    background-color: #CBCBCB;
+}
+.coursera-catalog-listings .coursera-catalog-course-listing-box .coursera-catalog-listing-secondary .coursera-catalog-listing-secondary-sigtrack-not-open:hover {
+    background-color: #A9A9A9;
+    color: #F7F7F7;
+}
+.coursera-catalog-listing-secondary-link {
+    color: #2E67B1;
+    position: relative;
+    z-index: 2;
+}
+.coursera-catalog-listing-secondary-link .coursera-catalog-listing-secondary-link-target {
+    height: 160%;
+    left: -10%;
+    position: absolute;
+    top: -30%;
+    width: 120%;
+}
+.coursera-catalog-listing-relevance {
+    width:40px;
+    height:40px;
+    float:left;
+}
+.coursera-catalog-listing-interested {
+    width:40px;
+    height:40px;
+    margin-left:25px;
+    
+}
+.coursera-catalog-listing-basic {
+    width:40px;
+    height:40px;
+    margin-left:25px;
+    
+}
+.coursera-catalog-listing-advanced {
+    width:40px;
+    height:40px;
+    margin-left:25px;
+    
+}
+.coursera-catalog-listing-recommend {
+    width:40px;
+    height:40px;
+    margin-left:25px;
+    
+}
+.coursera-catalog-listing-ratings {
+	width:inherit;
+    height:50px;
+    margin: 12px 0 -6px 20px;
+
+}

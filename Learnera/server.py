@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request, redirect
+from flask import Flask, jsonify, render_template, request, redirect, Response
 app = Flask(__name__)
 import Read_Data
 import mit_parse
@@ -66,15 +66,14 @@ def search():
 			user_info.append(get_conn_count(usr))
 			attrib = db.find_course_attrib(course[4])
 
-		course.insert(3,attrib['basic'])
-		course.insert(4,attrib['advanced'])
+		course.append(attrib['basic'])
+		course.append(attrib['advanced'])
 	ret = isbn.getisbnData(query)
 	print user_info
 	return jsonify(result = temp, result2 = ret)
 
 @app.route('/_searchredir')
 def searchredir():
-	print "here2"
 	uid = request.args.get('uid', 0, type=str)
 	username = request.args.get('username', 0, type=str)
 	query = request.args.get('query',0, type=str)
@@ -83,23 +82,18 @@ def searchredir():
 	print username
 	print query
 	
-	url = 'http://localhost:5000/index.html?uid=' + uid + '&username=' + username + '&query=' + query; 
+	url = 'http://localhost:5000/recommend.html?uid=' + uid + '&username=' + username + '&query=' + query; 
 	webbrowser.open(url)
 	return
 
-@app.route('/index.html')
+@app.route('/recommend.html')
 def indexhtml():
 	
-	print "here3"
-	uid = request.args.get('uid', 0, type=str)
+	user_id = request.args.get('uid', 0, type=str)
 	username = request.args.get('username', 0, type=str)
 	query = request.args.get('query',0, type=str)
-	
-	print uid
-	print username
-	print query
-	
-	return	render_template("index.html", uid = uid, username = username, query = query)
+
+	return	render_template("recommend.html", uid = user_id, query=query, username = username)
 	
 @app.route('/_relevant')
 def relevant():
@@ -189,11 +183,11 @@ def redir():
 		print "No Auth Code\n"
 		return render_template('login.html')
 
-    
+
 if __name__ == '__main__':
 	app.debug = True
 	print 'calling preprocess'
 	Read_Data.preprocess()
-	app.run(debug=True, use_reloader=False)
+	app.run(debug=True, use_reloader=True)
 	
 	

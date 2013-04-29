@@ -28,14 +28,16 @@ def getisbnData(query):
                 isbnid = d.get('isbn')
                 bookid = d.get('book_id')
                 booklink = bookLinkBase + d.get('book_id') + '.html'
-                bookTitle = d.title.string
+                bookTitle = d.titlelong.string
+                bookAuthor = d.authorstext.string
                 returnBooks[bookCount].append(isbnid)
                 returnBooks[bookCount].append(bookid)
                 returnBooks[bookCount].append(booklink)
                 returnBooks[bookCount].append(bookTitle)
+                returnBooks[bookCount].append(bookAuthor)
                 bookCount = bookCount + 1
         
-        return returnBooks       
+        return returnBooks[0:8]       
         
 
 	
