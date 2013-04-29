@@ -1,0 +1,172 @@
+{% extends "layout_index.html" %}
+{% block body %}
+<script type=text/javascript>
+
+  $(function() {  
+  
+  	  var userid = '{{uid}}';
+  	  var query = '{{ query }}';
+	  function search_fn(userid, query)
+	  {
+		  	$.getJSON($SCRIPT_ROOT + '/_search', 
+			  {
+				a: query,
+				uid: userid
+			  }, function(data) 
+			  {
+				  	$('#header').empty();
+				  	$('#header').text('Recommedations for you..');
+				  	var $div = $('<div class=coursera-catalog-listings>');
+					$('#content').empty();
+					$('#content').append($div);
+
+					$.each(data.result, function(i,l)
+				  	{
+					  	var course_id = l[1];
+				  		var link = l[2];
+				  		var title = l[3];
+				  		var description = l[4];
+				  		var univ = '';
+				  		var instructor = '';
+				  		var thumbnail = l[5];
+				  		var basic;
+				  		var advanced;
+				  		
+				  		
+				  		if(l[0] != 'youtube')
+				  		{
+					  		univ = l[6];
+					  		instructor = l[7];
+					  	}
+					  
+					  	var $div2 = $('<div class=coursera-catalog-course-listing-box><div class=row-fluid><div class=span2><img class=coursera-catalog-listing-thumbnail src=' + thumbnail + '></div><div class=span8><div class=coursera-catalog-listing-text><div class=coursera-catalog-listing-primary><h4 class=coursera-catalog-listing-university><a class="coursera-catalog-listing-secondary-link internal-home">' + univ + '</a><span> </span></h4><h3 class="coursera-catalog-listing-coursename"><a class="coursera-catalog-listing-courselink internal-home" href=' + link +' target="_blank">' + title + '<span class="coursera-catalog-listing-course-link-box"> </span></a></h3><h4 class="coursera-catalog-listing-instructor"><a class="internal-home coursera-catalog-listing-secondary-link">' + instructor + '</div></div><div class=coursera-catalog-listing-ratings><img class=coursera-catalog-listing-relevance src=http://cdn1.iconfinder.com/data/icons/brightmix/128/monotone_smiley_sad.png name=' + course_id+ '><img class=coursera-catalog-listing-interested src=http://www.techclump.com/wp-content/uploads/2011/05/Facebook_Dislike_Button.jpg name=' + course_id+ '><img class=coursera-catalog-listing-basic src=http://opinioniste.files.wordpress.com/2011/08/staples-easy-button.jpg name=' + course_id+ '><img class=coursera-catalog-listing-advanced src=http://opinioniste.files.wordpress.com/2011/08/staples-easy-button.jpg name=' + course_id+ '><img class=coursera-catalog-listing-recommend src=http://www.shoptab.net/blog/wp-content/uploads/2012/01/Facebook-Like-Button.jpg name=' + course_id+ '></div></div></div></div>');
+						$div.append($div2);
+					  
+						  
+				  	});
+				
+					$('#book_content').empty();
+				   var $div = $('<div class=book-listings>');
+				   $('#book_content').append($div);			  
+				   $.each(data.result2, function(i,l)
+				   {
+				  	
+				  		var imglink = 'http://covers.openlibrary.org/b/isbn/' + l[0] + '-M.jpg' ;
+				  		var link = l[2];
+				  		var title = l[3];
+				  		var author = l[4];
+				  		var $div2 = $('<div class=coursera-catalog-course-listing-box><div class=row-fluid><div class=span2><img class=coursera-catalog-listing-thumbnail src=' + imglink + '></div><div class=span8><div class=coursera-catalog-listing-text><div class=coursera-catalog-listing-primary><h3 class="coursera-catalog-listing-coursename"><a class="coursera-catalog-listing-courselink internal-home" href=' + link +' target="_blank">' + title + '<span class="coursera-catalog-listing-course-link-box"> </span></a></h3><h4 class="coursera-catalog-listing-instructor"><a class="internal-home coursera-catalog-listing-secondary-link">' + author + '</div></div></div></div></div>');
+						$div.append($div2);
+					 });
+	
+		  	   return false;
+		});
+	};
+  		$(document).ready(function() 
+  		{
+  		// Handler for .ready() called.
+  			search_fn(userid, query);  
+      	
+    	});
+    
+    	var search_box = function(e)
+    	{
+    		query_str = $('input[name="a"]').val();
+    		search_fn(userid,query_str);
+    	}; 
+    	
+		var rel_mark = function(e) 
+    	{
+			  alert('hello_NR');
+			  $.getJSON($SCRIPT_ROOT + '/_relevant', 
+			  {
+				a: query,
+				b: this.name,
+				c: userid
+			  }, function(data) 
+			  {
+			  });
+		};
+	
+		var interest_mark = function(e) 
+    	{
+			  alert('hello_no_interest');
+			  $.getJSON($SCRIPT_ROOT + '/_relevant', 
+			  {
+				a: query,
+				b: this.name,
+				c: userid
+			  }, function(data) 
+			  {
+			  });
+		};
+	
+		var basic_mark = function(e) 
+    	{
+			  alert('hello_too_basic');
+			  $.getJSON($SCRIPT_ROOT + '/_basic', 
+			  {
+				a: query,
+				b: this.name,
+				c: userid
+			  }, function(data) 
+			  {
+			  });
+		};
+	
+		var advanced_mark = function(e) 
+    	{
+			  alert('hello_too_advanced');
+			  $.getJSON($SCRIPT_ROOT + '/_advanced', 
+			  {
+				a: query,
+				b: this.name,
+				c: userid
+			  }, function(data) 
+			  {
+			  });
+		};
+	
+		var recommend_mark = function(e) 
+    	{
+			  alert('hello_recommend');
+			  $.getJSON($SCRIPT_ROOT + '/_advanced', 
+			  {
+				a: query,
+				b: this.name,
+				c: userid
+			  }, function(data) 
+			  {
+			  });
+		};
+		
+	$('.coursera-catalog-listing-relevance').live('click', rel_mark);  	
+	$('.coursera-catalog-listing-interested').live('click', interest_mark); 
+	$('.coursera-catalog-listing-basic').live('click', basic_mark); 	
+	$('.coursera-catalog-listing-advanced').live('click', advanced_mark); 
+	$('.coursera-catalog-listing-recommend').live('click', recommend_mark); 
+	$('a#search_click').bind('click', search_box);
+ 	 
+ 	
+    $('input[type=text]').bind('keydown', function(e) {
+      if (e.keyCode == 13) {
+        search_box(e);
+      }
+    });
+
+    $('input[name=a]').focus();
+  
+ });      	
+</script>
+<div id='header'>Please wait while we load recommendations for you..<br> <img src ='http://24.media.tumblr.com/tumblr_masolipmMm1rt8dxlo1_500.gif'></div>
+<p>
+  <input type=text size=20 name=a> 
+<p><a href=# id=search_click>Search!</a>
+<p>
+<div style ="width:100%">
+<div class="course-content" id=content></div>
+<span style='float:left; width:10%'></span>
+<div class="book-content" id=book_content></div>
+</div>
+</p>
+{% endblock %}
