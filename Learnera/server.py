@@ -127,7 +127,7 @@ def relevant():
 	print "Inserting Non-relevant into DB ", query, course
 	db.insert_nonrelevant(query, course)
 	
-	res = 'user '+ str(uid) + 'says ' + str(course) + ' is not relevant for ' + str(query)
+	res = ''
 	return jsonify(result = res)
 
 @app.route('/_interested')
@@ -172,7 +172,7 @@ def advanced():
 	query = request.args.get('a', 0, type=str)
 	course = request.args.get('b', 0, type=str)
 	uid = request.args.get('c', 0 , type=str)
-	res = 'user '+ uid + 'says ' + str(c) + ' is too advanced for ' + str(d)
+	res = ''
 	User = {"id": uid, "attrib":"advanced"}
 	db = dbms.Database()
 	
