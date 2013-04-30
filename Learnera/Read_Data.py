@@ -108,7 +108,9 @@ def process_courses():
 		course_text[course['short_name']] += course['about_the_course'] + ' '
 		#course_text[course['short_name']] += course['short_description'] + course['description']
 		course_text[course['short_name']] = re.sub('<[^<]+?>|\\n', ' ', course_text[course['short_name']])
-		tok = re.findall(r'\w+',course_text[course['short_name']],re.UNICODE)
+		course_text[course['short_name']] = course_text[course['short_name']].lower()
+		#tok = re.findall(r'\w+',course_text[course['short_name']],re.UNICODE)
+		tok = course_text[course['short_name']].split()
 		tok = [x.lower() for x in tok]
 		tf_add(tok,course['short_name'])
 		idf_add(tok)
@@ -193,7 +195,9 @@ def process_courses():
 			clusters[courses['CourseSection']].add(courses['UniqueID'])
 			course_details[courses['UniqueID']] = details
 			course_text[courses['UniqueID']] = courses['Title'] + ' ' + courses['Description']
-			tok = re.findall(r'\w+',course_text[courses['UniqueID']],re.UNICODE)
+			course_text[courses['UniqueID']] = course_text[courses['UniqueID']].lower()
+			#tok = re.findall(r'\w+',course_text[courses['UniqueID']],re.UNICODE)
+			tok = course_text[courses['UniqueID']].split()
 			tok = [x.lower() for x in tok]
 			tf_add(tok,courses['UniqueID'])
 			idf_add(tok)
@@ -225,7 +229,9 @@ def process_courses():
 				details.append(summary)
 				details.append('https://lh4.ggpht.com/qfVffxi66yLyt_LYylckIPeCDHxEGt0rMOTmgvLLmjkYklHfJoMUpFswWEUYtCKIWIc=w705')
 				course_details[plid] = details
-				tok = re.findall(r'\w+', title + ' ' + summary ,re.UNICODE)
+				course_text[plid] = course_text[plid].lower()
+				#tok = re.findall(r'\w+', course_text[plid] ,re.UNICODE)
+				tok = course_text[plid].split()
 				tok = [x.lower() for x in tok]
 				tf_add(tok,plid)
 				idf_add(tok)
@@ -255,8 +261,11 @@ def process_query(q):
     global query
     global course_idf
     query.clear()
-    tok = re.findall(r'\w+',q,re.UNICODE)
+    q = q.lower()
+    #tok = re.findall(r'\w+',q,re.UNICODE)
+    tok = q.split()
     tok = [x.lower() for x in tok]
+    print 'tok: ', tok
     for word in tok:
         query[word] += 1
     norm = 0
@@ -280,17 +289,23 @@ def find_dist(a, b):
 
 def find_closest_cluster():
     global query
-    global centroids
+    global centroid
     global clusters
     d_list = []
     for c in centroid:
         d = find_dist(centroid[c], query)
         d_list.append((c, d))
     d_list.sort(key=lambda x: x[1], reverse = True)
+    print 'closest cluster.. : ', d_list[0]
     return d_list
 
 
 def post_process(results,query_word):
+	q = query_word.split()
+	query_w = ''
+	for word in q:
+		query_w += word + ' '
+	query_word = query_w
 	score = defaultdict(int)
 	for r in results:
 		score[r[0]] += course_text[r[0]].count(query_word)
@@ -323,7 +338,7 @@ def search(query_word):
 						
 	results= sorted(q_result.items(), reverse = True, key=lambda x : x[1])	
 			
-	imp_results = post_process(results,query_word)
+	imp_results = post_process(results,query_word.lower())
 	
 	for r in imp_results:
 		final_result.append(r)

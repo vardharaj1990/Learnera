@@ -10,6 +10,7 @@ import dbms
 import requests
 import LinkedIn
 import copy
+import urllib
 
 @app.route('/_search')
 def search():
@@ -78,11 +79,12 @@ def searchredir():
 	username = request.args.get('username', 0, type=str)
 	query = request.args.get('query',0, type=str)
 	
-	print uid
-	print username
-	print query
 	
-	url = 'http://localhost:5000/recommend.html?uid=' + uid + '&username=' + username + '&query=' + query; 
+	args = {'uid':uid, 'username': username, 'query': query}
+	urlquery = urllib.urlencode(args)
+
+	#url = 'http://localhost:5000/recommend.html?uid=' + uid + '&username=' + username + '&query=' + query;
+	url =  'http://localhost:5000/recommend.html?' + urllib.urlencode(args)
 	webbrowser.open(url)
 	return
 
@@ -92,7 +94,7 @@ def indexhtml():
 	user_id = request.args.get('uid', 0, type=str)
 	username = request.args.get('username', 0, type=str)
 	query = request.args.get('query',0, type=str)
-
+	
 	return	render_template("recommend.html", uid = user_id, query=query, username = username)
 	
 @app.route('/_relevant')
