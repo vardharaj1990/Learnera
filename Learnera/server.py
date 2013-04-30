@@ -10,7 +10,7 @@ import dbms
 import requests
 import LinkedIn
 import copy
-
+import urllib
 
 def conn_data(db, user_id, temp):
 	conn = db.find_connections(user_id)
@@ -51,7 +51,6 @@ def search():
 	res = db.find_queryresults(query)
 	non_relevant = db.find_nonrelevant(query) 
 	update = False
-	
 	#print "NR: "
 	#print non_relevant
 	if  res == None:
@@ -97,11 +96,10 @@ def searchredir():
 	username = request.args.get('username', 0, type=str)
 	query = request.args.get('query',0, type=str)
 	
-	print uid
-	print username
-	print query
+	args = {'uid':uid, 'username': username, 'query': query}
+	urlquery = urllib.urlencode(args)	
+	url = 'http://localhost:5000/recommend.html?' + urlquery; 
 	
-	url = 'http://localhost:5000/recommend.html?uid=' + uid + '&username=' + username + '&query=' + query; 
 	webbrowser.open(url)
 	return
 
