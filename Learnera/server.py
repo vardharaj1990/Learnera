@@ -87,8 +87,14 @@ def search():
 	user_info = conn_data(db, user_id, temp)	
 	print "User Info list: ", user_info
 	#print "User not interested list: ", db.find_notinterested(user_id)
+	for i in range(len(user_info)):
+		print user_info[i]
+		temp[i].append(user_info[i]["basic"])
+		temp[i].append(user_info[i]["adv"])
+		temp[i].append(user_info[i]["likes"])
+
 	ret = isbn.getisbnData(query)
-	return jsonify(result = temp, result2 = ret, result3 = user_info)
+	return jsonify(result = temp, result2 = ret)
 
 @app.route('/_searchredir')
 def searchredir():
