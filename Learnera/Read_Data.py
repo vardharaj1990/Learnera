@@ -123,8 +123,7 @@ def process_courses():
 		details.append(course['small_icon_hover'])
 		details.append(course['universities'][0]['name'])
 		details.append(course['instructor'])
-		details.append(course['courses'][len(course['courses']) - 1]['duration_string'])
-		details.append(course['courses'][len(course['courses']) - 1]['start_date_string'])
+		
 		course_details[course['short_name']] = details
 		
 	f.close()
@@ -178,17 +177,6 @@ def process_courses():
 			else:
 				details.append('')
 		
-				
-			if 'TeachingDate' in courses:
-				details.append(courses['TeachingDate'])
-			else:
-				details.append('')
-			
-			if 'DownloadPageLink' in courses:
-				details.append(courses['DownloadPageLink'])
-			else:
-				details.append('')
-				
 			
 			
 			courses_to_cat.add(courses['UniqueID'])
@@ -227,6 +215,10 @@ def process_courses():
 				details.append(title)
 				details.append(summary)
 				details.append('https://lh4.ggpht.com/qfVffxi66yLyt_LYylckIPeCDHxEGt0rMOTmgvLLmjkYklHfJoMUpFswWEUYtCKIWIc=w705')
+				details.append('')
+				details.append('')
+				
+				
 				course_details[plid] = details
 				course_text[plid] = course_text[plid].lower()
 				#tok = re.findall(r'\w+', course_text[plid] ,re.UNICODE)

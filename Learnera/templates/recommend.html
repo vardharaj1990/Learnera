@@ -29,8 +29,9 @@
 				  		var univ = '';
 				  		var instructor = '';
 				  		var thumbnail = l[5];
-				  		var basic;
-				  		var advanced;
+				  		var basic = l[8];
+				  		var advanced = l[9];
+				  		var likes = l[10];
 				  		
 				  		
 				  		if(l[0] != 'youtube')
@@ -39,7 +40,7 @@
 					  		instructor = l[7];
 					  	}
 					  
-					  	var $div2 = $('<div class=coursera-catalog-course-listing-box><div class=row-fluid><div class=span2><img class=coursera-catalog-listing-thumbnail src=' + thumbnail + '></div><div class=span8><div class=coursera-catalog-listing-text><div class=coursera-catalog-listing-primary><h4 class=coursera-catalog-listing-university><a class="coursera-catalog-listing-secondary-link internal-home">' + univ + '</a><span> </span></h4><h3 class="coursera-catalog-listing-coursename"><a class="coursera-catalog-listing-courselink internal-home" href=' + link +' target="_blank">' + title + '<span class="coursera-catalog-listing-course-link-box"> </span></a></h3><h4 class="coursera-catalog-listing-instructor"><a class="internal-home coursera-catalog-listing-secondary-link">' + instructor + '</div></div><div class=coursera-catalog-listing-ratings><img class=coursera-catalog-listing-recommend src=http://social-capitalist.com/wp-content/uploads/2010/04/facebook-like-button-social-capitalist-smo-blog.jpg name=' + course_id+ '><img class=coursera-catalog-listing-interested src=http://www.techclump.com/wp-content/uploads/2011/05/Facebook_Dislike_Button.jpg name=' + course_id+ '><img class=coursera-catalog-listing-basic src=http://www.homezada.com/images/green_easy_button.jpg name=' + course_id+ '><img class=coursera-catalog-listing-advanced src=http://a1.phobos.apple.com/us/r1000/006/Purple/09/fe/e3/mzl.nhyilfrm.jpg name=' + course_id+ '><img class=coursera-catalog-listing-relevance src=http://www.desertdogdecals.com/image/cache/data/multi/no_bullshit_red-500x400.jpg name=' + course_id+ '></div></div></div></div>');
+					  	var $div2 = $('<div class=coursera-catalog-course-listing-box><div class=row-fluid><div class=span2><img class=coursera-catalog-listing-thumbnail src=' + thumbnail + '></div><div class=span8><div class=coursera-catalog-listing-text><div class=coursera-catalog-listing-primary><h4 class=coursera-catalog-listing-university><a class="coursera-catalog-listing-secondary-link internal-home">' + univ + '</a><span> </span></h4><h3 class="coursera-catalog-listing-coursename"><a class="coursera-catalog-listing-courselink internal-home" href=' + link +' target="_blank">' + title + '<span class="coursera-catalog-listing-course-link-box"> </span></a></h3><h4 class="coursera-catalog-listing-instructor"><a class="internal-home coursera-catalog-listing-secondary-link">' + instructor + '</div></div><div class=coursera-catalog-listing-ratings><img class=coursera-catalog-listing-recommend src=http://social-capitalist.com/wp-content/uploads/2010/04/facebook-like-button-social-capitalist-smo-blog.jpg name=' + course_id+ '><h7 id=l' + course_id +'>' + likes + '</h7><img class=coursera-catalog-listing-interested src=http://www.techclump.com/wp-content/uploads/2011/05/Facebook_Dislike_Button.jpg name=' + course_id+ '><img class=coursera-catalog-listing-basic src=http://www.homezada.com/images/green_easy_button.jpg name=' + course_id+ '><h7 id=b' + course_id +'>' + basic + '</h7><img class=coursera-catalog-listing-advanced src=http://a1.phobos.apple.com/us/r1000/006/Purple/09/fe/e3/mzl.nhyilfrm.jpg name=' + course_id+ '><h7 id=a' + course_id +'>' + advanced + '</h7><img class=coursera-catalog-listing-relevance src=http://www.officialpsds.com/images/thumbs/Delete--No-entry-sign-psd39034.png name=' + course_id+ '></div></div></div></div>');
 						$div.append($div2);
 					  
 						  
@@ -77,7 +78,9 @@
     	
 		var rel_mark = function(e) 
     	{
-			  alert('hello_not_relevant');
+			  //alert('hello_not_relevant');
+			  var user_id = userid;
+			  var q = query;
 			  $.getJSON($SCRIPT_ROOT + '/_relevant', 
 			  {
 				a: query,
@@ -85,25 +88,31 @@
 				c: userid
 			  }, function(data) 
 			  {
+			  	   search_fn(user_id,q);
 			  });
 		};
 	
 		var interest_mark = function(e) 
     	{
-			  alert('hello_no_interest');
-			  $.getJSON($SCRIPT_ROOT + '/_notinterested', 
+    		  $.getJSON($SCRIPT_ROOT + '/_notinterested', 
 			  {
 				a: query,
 				b: this.name,
 				c: userid
 			  }, function(data) 
 			  {
+			  	search_fn(user_id,q);
+			  	
 			  });
 		};
 	
 		var basic_mark = function(e) 
     	{
-			  alert('hello_too_basic');
+			  //alert('hello_too_basic');
+			  var cid = '#b' + this.name;
+
+			  var cval = $(cid).text();
+
 			  $.getJSON($SCRIPT_ROOT + '/_basic', 
 			  {
 				a: query,
@@ -111,12 +120,18 @@
 				c: userid
 			  }, function(data) 
 			  {
+			  	$(cid).text(parseInt(cval) + 1);
 			  });
 		};
 	
 		var advanced_mark = function(e) 
     	{
-			  alert('hello_too_advanced');
+			  //alert('hello_too_advanced');
+			  var cid = '#a' + this.name;
+
+			  var cval = $(cid).text();
+			 
+			  
 			  $.getJSON($SCRIPT_ROOT + '/_advanced', 
 			  {
 				a: query,
@@ -124,12 +139,16 @@
 				c: userid
 			  }, function(data) 
 			  {
+			  	$(cid).text(parseInt(cval) + 1);
+
 			  });
 		};
 	
 		var recommend_mark = function(e) 
     	{
-			  alert('hello_recommend');
+			  //alert('hello_recommend');
+			  
+
 			  $.getJSON($SCRIPT_ROOT + '/_interested', 
 			  {
 				a: query,
@@ -137,6 +156,7 @@
 				c: userid
 			  }, function(data) 
 			  {
+			   
 			  });
 		};
 		
