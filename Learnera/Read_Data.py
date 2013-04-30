@@ -10,6 +10,7 @@ import random
 import urllib
 import pickle
 import kmeans
+import youtubecatdict
 
 def func():
     return defaultdict(float)
@@ -33,6 +34,7 @@ q_result = defaultdict(float)
 centroid = defaultdict(func)
 course_details = defaultdict(list)
 coursedict = defaultdict(int)
+courseramap = defaultdict(str)
 
 def read_json():
     f = open("fullcourses.txt", 'w')
@@ -84,19 +86,17 @@ def calc_tfidf():
 
 def process_json():
     global num_courses 
+    courseramap = youtubecatdict.getCourseraMap()
     f = open("fullcourses.txt", 'rU')
     content = f.readlines()
     for line in content:
         r = json.loads(line)
         for courses in r:
             num_courses += 1
-            social_links.add(courses['social_link'])
-            short_names.add(courses['short_name'])
-            for cat in courses['category-ids']:
-                clusters[cat].add(courses['short_name'])
-                course_cat[courses['short_name']].add(cat)
-            for course in courses['courses']:
-                links.add(course['home_link'])
+            for cat in courses['categories']:
+            	categ = courseramap[cat['name'].strip()]
+                clusters[categ].add(courses['short_name'])
+            	print cat['name'] , ': ' , categ
 
 def process_courses():
 	global num_courses 
@@ -216,8 +216,7 @@ def process_courses():
 				summary = entry['summary']['$t']
 				plid = entry['yt$playlistId']['$t']
 				playlistlink = 'http://www.youtube.com/playlist?list=' + plid
-				if len(summary.split()) < 10:
-					continue
+				num_courses += 1
 				details = []
 				plid = 'y' + plid
 				clusters[cat_id].add(plid)
@@ -347,7 +346,7 @@ def search(query_word):
 	
 
 	details_course = []
-	for r in final_result[0:5]:
+	for r in final_result[0:10]:
 		if isinstance(course_details[r][3], basestring) and len(course_details[r][3]) > 197:
 			course_details[r][3] = course_details[r][3][:194] + '...'
 		details_course.append(course_details[r])
