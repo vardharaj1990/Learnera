@@ -47,30 +47,29 @@ $("#search-btn").live("click", function()
 	  	{
 			var buttonId = $(this).attr("id");
 			newinterest = $('input[name="a"]').val();
-			var $li=  $('<li> <a href="#" id=' + newinterest + ' ><span class="ca-icon">' + newinterest
-						+ '</span><div class="ca-content"> <h2 class="ca-main" >'
+			
+			if(newinterest != "")
+			{
+				var $li=  $('<li> <a href="#" id=' + newinterest + ' >'
+						+ '<h2 class="ca-main" >'
 						+ newinterest 
 						+ '</h2><h3 class="ca-sub">'
 						+ newinterest
 						+ '</h3></div></a></li>');
 			
-			$('#bubbles').append($li);
-			alert(userid);
-			$.getJSON($SCRIPT_ROOT + '/_addinterest',
-			{
-				uid: userid,
-				b: $('input[name="a"]').val()	
-			}, function(data)
-			{
+				$('#bubbles').append($li);
+				$.getJSON($SCRIPT_ROOT + '/_addinterest',
+				{
+					uid: userid,
+					b: $('input[name="a"]').val()	
+				}, function(data)
+				{
 				
 				
 				
-			});
+				});
+			}	
 	});
-
-
-
-
 
 
 /*var uid = '{{uid}}';
@@ -129,14 +128,18 @@ $(document).ready(function() {
 
 <header>
     <nav>   
+	
 	<!---
       <div id="logo"><a href="#"><img src="https://lh3.googleusercontent.com/VPQNX56EsZ8yD2suYQqSLK5Zfa3VIwgUqZ08km9Kn-Tq85j7NsjX0gd2DzO6fZ3YfQ=s190" alt="Logo here" /></a>      </div>
      ---> 
-    <div id="search-top">
+	<div style="margin-top:1%;" align=center>
+		<h2 style="font-size:50px;"> Learnera! </h2>
+	</div>
+    <div id="search-top" style="margin-top:3%;font-weight:bold;" align=center>
 	   
    
-  <input type="text" onFocus="if(this.value=='Search')this.value='';" onBlur="if(this.value=='')this.value='Search';" value="Search" name=a id="search-field"/>
-  <input type="submit" value="Add Interest" id="search-btn"/>
+  <input type="text" name=a id="search-field"/>
+  <input type="button" value="Add Interest" id="search-btn"/>
  
       </div>  
 	  <!---
@@ -160,7 +163,7 @@ $(document).ready(function() {
                             </div>
                     </a>                   
 			{% else %}
-			<li><em>Unbelievable.  No entries here so far</em>
+		<!--	<li><em>Unbelievable.  No entries here so far</em>  -->
 			{% endfor %}
               
             </ul>

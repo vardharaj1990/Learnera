@@ -240,4 +240,4 @@ if __name__ == '__main__':
 	app.debug = True
 	print 'calling preprocess'
 	Read_Data.preprocess()
-	app.run(debug=True, use_reloader=True)
+	app.run(debug=True, use_reloader=False)
