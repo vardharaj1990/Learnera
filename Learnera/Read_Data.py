@@ -372,6 +372,7 @@ def preprocess():
 	calc_idf()
 	calc_tfidf()
 	clustering()
+	print "number of courses", len(course_tfidf)
 	
 def work(query_word):
 	process_query(query_word)

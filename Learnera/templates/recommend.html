@@ -15,7 +15,7 @@
 			  }, function(data) 
 			  {
 				  	
-				  	$('#header').text('Recommendations for you...');
+				  	$('#header').text('Courses and books for you');
 				  	var $div = $('<div class=coursera-catalog-listings>');
 					$('#content').empty();
 					$('#content').append($div);
@@ -73,7 +73,7 @@
     	var search_box = function(e)
     	{
     		query = $('input[name="a"]').val();
-    		$('#header').text("Search Results...");
+    		$('#header').text("Searching...");
     		search_fn(userid,query);
     	}; 
     	
