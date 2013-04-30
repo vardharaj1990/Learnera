@@ -35,6 +35,7 @@ centroid = defaultdict(func)
 course_details = defaultdict(list)
 coursedict = defaultdict(int)
 courseramap = defaultdict(str)
+courses_to_cat = set()
 
 def read_json():
     f = open("fullcourses.txt", 'w')
@@ -96,7 +97,6 @@ def process_json():
             for cat in courses['categories']:
             	categ = courseramap[cat['name'].strip()]
                 clusters[categ].add(courses['short_name'])
-            	print cat['name'] , ': ' , categ
 
 def process_courses():
 	global num_courses 
@@ -104,7 +104,7 @@ def process_courses():
 	content = f.readlines()
 	for line in content:
 		course = json.loads(line)
-		course_text[course['short_name']] = course['name'] + ' '
+		course_text[course['short_name']] = course['name'] + ' ' + course['name'] + ' '
 		course_text[course['short_name']] += course['about_the_course'] + ' '
 		#course_text[course['short_name']] += course['short_description'] + course['description']
 		course_text[course['short_name']] = re.sub('<[^<]+?>|\\n', ' ', course_text[course['short_name']])
@@ -191,10 +191,10 @@ def process_courses():
 				
 			
 			
-			
-			clusters[courses['CourseSection']].add(courses['UniqueID'])
+			courses_to_cat.add(courses['UniqueID'])
+			#clusters[courses['CourseSection']].add(courses['UniqueID'])
 			course_details[courses['UniqueID']] = details
-			course_text[courses['UniqueID']] = courses['Title'] + ' ' + courses['Description']
+			course_text[courses['UniqueID']] = courses['Title'] + ' ' + courses['Title'] + ' ' + courses['Description']
 			course_text[courses['UniqueID']] = course_text[courses['UniqueID']].lower()
 			#tok = re.findall(r'\w+',course_text[courses['UniqueID']],re.UNICODE)
 			tok = course_text[courses['UniqueID']].split()
@@ -206,10 +206,10 @@ def process_courses():
 	
 	f = open("youtube.json", 'rU')
 	content = f.readlines()
-	cat_id = 0
 	for line in content:
 		data = json.loads(line)
 		key = 'entry'
+		cat_id = data['feed']['title']['$t']
 		if key in data['feed']:     
 			for entry in data['feed']['entry']:
 				title = entry['title']['$t']
@@ -220,7 +220,7 @@ def process_courses():
 				details = []
 				plid = 'y' + plid
 				clusters[cat_id].add(plid)
-				course_text[plid] = title + ' ' + summary
+				course_text[plid] = title + ' ' + title + ' ' + summary
 				details.append('youtube')
 				details.append(plid)
 				details.append(playlistlink)
@@ -235,7 +235,6 @@ def process_courses():
 				tf_add(tok,plid)
 				idf_add(tok)
 		
-		cat_id += 1
 	f.close()
 	
 	#coursedict = kmeans.getLabels(course_text)
@@ -245,9 +244,32 @@ def process_courses():
 		
 def ret_categories():
 	return clusters
+	
+def find_cluster(coursetf):
+    global centroid
+    global clusters
+    d_list = []
+    for c in centroid:
+        d = find_dist(centroid[c], coursetf)
+        d_list.append((c, d))
+    d_list.sort(key=lambda x: x[1], reverse = True)
+    #print 'closest cluster.. : ', d_list[0]
+    return d_list[0][0]
 			
 def clustering():
 	global centroid
+	for c in clusters:
+		for course in clusters[c]:
+			for terms in course_tfidf[course]:
+				centroid[c][terms] += course_tfidf[course][terms]
+		for t in centroid[c]:
+			centroid[c][t] = centroid[c][t] / len(clusters[c])
+	
+	for c in courses_to_cat:
+		clus = find_cluster(course_tfidf[c])
+		clusters[clus].add(c)
+	
+	centroid.clear()
 	for c in clusters:
 		for course in clusters[c]:
 			for terms in course_tfidf[course]:
@@ -327,7 +349,7 @@ def search(query_word):
 	d_list = find_closest_cluster()
 	cnt = 1
     
-	for c in d_list[0:10]:
+	for c in d_list[0:2]:
 		for doc in clusters[c[0]]:
 			for key in query:
 				if course_tfidf[doc][key] != 0:
