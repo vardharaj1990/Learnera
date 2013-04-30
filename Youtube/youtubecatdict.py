@@ -8,23 +8,9 @@ import urllib2
 import simplejson
 import codecs
 
-categoryIds  = defaultdict(str)
 courserayoutubemap = defaultdict(str)
-def getYoutubeData():
-    catxml = open('chu.xml')
-    catdata = catxml.read()
-    catSoup = BeautifulSoup(catdata)
 
-    youtubejson = open('youtube.json','a')
-    catcount = 0
-    for category in catSoup.find_all('atom:category'):
-		catName = category['label']
-		catId = "Courses for category " + category['term']
-		print catId,
-		print catName
-		categoryIds[catId] = catName
-
-def printCourseraMap():
+def getCourseraMap():
 	file = open('coursera_categories.txt','r')
 	content = file.readlines()
 	count = 1;
@@ -42,12 +28,5 @@ def printCourseraMap():
 			print categoryIds[youtubecat.strip()]
 			courserayoutubemap[courseracat.strip('\n')] = youtubecat.strip()
 			count = 1
-	
-	
 	return courserayoutubemap
 			
-				   
-if __name__ == "__main__":
-	getYoutubeData()
-	printCourseraMap()
-	#print categoryIds
