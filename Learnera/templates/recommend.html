@@ -6,16 +6,16 @@
   
   	  var userid = '{{uid}}';
   	  var query = '{{ query }}';
-	  function search_fn(userid, query)
+	  function search_fn(userid, querystr)
 	  {
 		  	$.getJSON($SCRIPT_ROOT + '/_search', 
 			  {
-				a: query,
+				a: querystr,
 				uid: userid
 			  }, function(data) 
 			  {
 				  	$('#header').empty();
-				  	$('#header').text('Recommedations for you..');
+				  	$('#header').text('Recommendations for you');
 				  	var $div = $('<div class=coursera-catalog-listings>');
 					$('#content').empty();
 					$('#content').append($div);
@@ -39,7 +39,7 @@
 					  		instructor = l[7];
 					  	}
 					  
-					  	var $div2 = $('<div class=coursera-catalog-course-listing-box><div class=row-fluid><div class=span2><img class=coursera-catalog-listing-thumbnail src=' + thumbnail + '></div><div class=span8><div class=coursera-catalog-listing-text><div class=coursera-catalog-listing-primary><h4 class=coursera-catalog-listing-university><a class="coursera-catalog-listing-secondary-link internal-home">' + univ + '</a><span> </span></h4><h3 class="coursera-catalog-listing-coursename"><a class="coursera-catalog-listing-courselink internal-home" href=' + link +' target="_blank">' + title + '<span class="coursera-catalog-listing-course-link-box"> </span></a></h3><h4 class="coursera-catalog-listing-instructor"><a class="internal-home coursera-catalog-listing-secondary-link">' + instructor + '</div></div><div class=coursera-catalog-listing-ratings><img class=coursera-catalog-listing-relevance src=http://cdn1.iconfinder.com/data/icons/brightmix/128/monotone_smiley_sad.png name=' + course_id+ '><img class=coursera-catalog-listing-interested src=http://www.techclump.com/wp-content/uploads/2011/05/Facebook_Dislike_Button.jpg name=' + course_id+ '><img class=coursera-catalog-listing-basic src=http://opinioniste.files.wordpress.com/2011/08/staples-easy-button.jpg name=' + course_id+ '><img class=coursera-catalog-listing-advanced src=http://opinioniste.files.wordpress.com/2011/08/staples-easy-button.jpg name=' + course_id+ '><img class=coursera-catalog-listing-recommend src=http://www.shoptab.net/blog/wp-content/uploads/2012/01/Facebook-Like-Button.jpg name=' + course_id+ '></div></div></div></div>');
+					  	var $div2 = $('<div class=coursera-catalog-course-listing-box><div class=row-fluid><div class=span2><img class=coursera-catalog-listing-thumbnail src=' + thumbnail + '></div><div class=span8><div class=coursera-catalog-listing-text><div class=coursera-catalog-listing-primary><h4 class=coursera-catalog-listing-university><a class="coursera-catalog-listing-secondary-link internal-home">' + univ + '</a><span> </span></h4><h3 class="coursera-catalog-listing-coursename"><a class="coursera-catalog-listing-courselink internal-home" href=' + link +' target="_blank">' + title + '<span class="coursera-catalog-listing-course-link-box"> </span></a></h3><h4 class="coursera-catalog-listing-instructor"><a class="internal-home coursera-catalog-listing-secondary-link">' + instructor + '</div></div><div class=coursera-catalog-listing-ratings><img class=coursera-catalog-listing-interested src=http://social-capitalist.com/wp-content/uploads/2010/04/facebook-like-button-social-capitalist-smo-blog.jpg name=' + course_id+ '><img class=coursera-catalog-listing-recommend src=http://www.techclump.com/wp-content/uploads/2011/05/Facebook_Dislike_Button.jpg name=' + course_id+ '><img class=coursera-catalog-listing-basic src=http://www.homezada.com/images/green_easy_button.jpg name=' + course_id+ '><img class=coursera-catalog-listing-advanced src=http://a1.phobos.apple.com/us/r1000/006/Purple/09/fe/e3/mzl.nhyilfrm.jpg name=' + course_id+ '><img class=coursera-catalog-listing-relevance src=http://www.desertdogdecals.com/image/cache/data/multi/no_bullshit_red-500x400.jpg name=' + course_id+ '></div></div></div></div>');
 						$div.append($div2);
 					  
 						  
@@ -71,13 +71,13 @@
     
     	var search_box = function(e)
     	{
-    		query_str = $('input[name="a"]').val();
-    		search_fn(userid,query_str);
+    		query = $('input[name="a"]').val();
+    		search_fn(userid,query);
     	}; 
     	
 		var rel_mark = function(e) 
     	{
-			  alert('hello_NR');
+			  alert('hello_not_relevant');
 			  $.getJSON($SCRIPT_ROOT + '/_relevant', 
 			  {
 				a: query,
@@ -91,7 +91,7 @@
 		var interest_mark = function(e) 
     	{
 			  alert('hello_no_interest');
-			  $.getJSON($SCRIPT_ROOT + '/_relevant', 
+			  $.getJSON($SCRIPT_ROOT + '/_notinterested', 
 			  {
 				a: query,
 				b: this.name,
@@ -130,7 +130,7 @@
 		var recommend_mark = function(e) 
     	{
 			  alert('hello_recommend');
-			  $.getJSON($SCRIPT_ROOT + '/_advanced', 
+			  $.getJSON($SCRIPT_ROOT + '/_interested', 
 			  {
 				a: query,
 				b: this.name,
@@ -158,10 +158,14 @@
   
  });      	
 </script>
-<div id='header'>Please wait while we load recommendations for you..<br> <img src ='http://24.media.tumblr.com/tumblr_masolipmMm1rt8dxlo1_500.gif'></div>
-<p>
-  <input type=text size=20 name=a> 
-<p><a href=# id=search_click>Search!</a>
+<div id='header'><h2>Please wait while we load recommendations for you...<h2><br> <img src ='http://24.media.tumblr.com/tumblr_masolipmMm1rt8dxlo1_500.gif'></div>
+<div>
+<div style="float:left">
+  <input type=text size=30 name=a> 
+
+</div>
+<div left-margin=20><a href=# id=search_click><img src="http://www.veryicon.com/icon/png/System/Black%20Glossy/Search.png" width=40 height=30></a></div>
+</div>
 <p>
 <div style ="width:100%">
 <div class="course-content" id=content></div>

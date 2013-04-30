@@ -167,4 +167,48 @@ class Database():
 			return self.db.queryresults.find({"query" : query})[0]['results']
 		else:
 			return None
-
+	'''
+	Update queryresults with filtered results.
+	'''
+	def update_queryresults(self, query, updated):
+		self.db.queryresults.update({"query" : query},  {"$set": {"results":updated}})
+		
+	'''
+	Insert < userid, courseid > pair.
+	'''
+	def insert_interested(self, userid, courseid):
+		self.db.interested.insert({"uid":userid, "courseid":courseid})
+		
+	
+	'''
+	Get number of users who have liked this course.
+	'''
+	def find_interested_count(self, courseid):
+		return self.db.interested.find({"courseid":courseid}).count()
+		
+	'''
+	Get the users who have liked this course.
+	'''
+	def find_interested_users(self, courseid):
+		cursor = self.db.interested.find({"courseid":courseid})
+		users = []
+		for cc in cursor:
+			users.append(cc['uid'])
+		
+		return users
+	
+	'''
+	Insert user specific interests. *Not Interested*
+	'''
+	def insert_notinterested(self, userid, courseid):
+		self.db.notinterested.insert({"uid":userid, "courseid":courseid})
+	
+	'''
+	Find user's *Not Interested* list.
+	'''
+	def find_notinterested(self, userid):
+		cursor = self.db.notinterested.find({"uid":userid})
+		courses = []
+		for cc in cursor:
+			courses.append(cc['courseid'])
+		return courses

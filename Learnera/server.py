@@ -10,7 +10,37 @@ import dbms
 import requests
 import LinkedIn
 import copy
-import urllib
+
+
+def conn_data(db, user_id, temp):
+	conn = db.find_connections(user_id)
+	user_conn = []
+	for cc in conn:
+		user_conn.append(cc['id'])
+	
+	user_info = []	
+
+	'''
+	Gives number of ppl who have voted for this course from the current users connection
+	'''
+	def get_conn_count(uu):
+		arr = 0
+		for user in uu:
+			if user_id != user and (user in user_conn):
+				arr += 1
+		return arr	
+	
+	for course in temp:
+		arr = 0
+		#Find Basic/Advanced Count, calculate num of connections who have liked
+		usr = db.find_course_metainfo(course[1])
+		attrib = db.find_course_attrib(course[1])
+		int_users = list(set(db.find_interested_users(course[1])))
+		print "interested_users: ", int_users
+		user_info.append({"basic":attrib['basic'], "adv":attrib['advanced'], "likes":get_conn_count(int_users)})
+	
+	return user_info
+
 
 @app.route('/_search')
 def search():
@@ -19,59 +49,47 @@ def search():
 	query = a
 	db = dbms.Database()
 	res = db.find_queryresults(query)
-	print user_id
-	#Important - Deep copy of returned results list
+	non_relevant = db.find_nonrelevant(query) 
+	update = False
+	
+	#print "NR: "
+	#print non_relevant
 	if  res == None:
 		res2 = Read_Data.work(query)
-		temp = copy.deepcopy(res2)
+		temp = copy.deepcopy(res2)    	#Important - Deep copy of returned results list
 	else:
+		#print "Reading from DB..."
+		if len(res) < 10:
+			res = Read_Data.work(query)
+			update = True
+			print "Results < 10"
 		temp = copy.deepcopy(res)
 	
-	db.insert_queryresults(query, temp)
-	user_info = []
+	non_relevant_flag = False
 	
-	user_conn = []
-	conn = db.find_connections(user_id)
-	for cc in conn:
-		user_conn.append(cc['id'])
+	temp2 = copy.deepcopy(temp)
 		
-	'''
-	Gives number of ppl who have voted for this course from the current users connection
-	'''
-	def get_conn_count(uu):
-		arr = 0
-		for user in uu:
-			if user_id != user['id'] and (user['id'] in user_conn):
-				#print "Conn has rated the same course:", user['id']
-				arr += 1
-		return arr
-	
-	for course in temp:
-		arr = 0
-		#Find Basic/Advanced Count, calculate num of connections who have voted
-		#Coursera
-		if course[0] == 'coursera':
-			attrib = db.find_course_attrib(course[1])
-			usr = db.find_course_metainfo(course[1])
-			
-			user_info.append(get_conn_count(usr))		
-		
-		#MIT
-		elif course[0] == 'mit':
-			attrib = db.find_course_attrib(course[8])
-			usr = db.find_course_metainfo(course[8])
-			user_info.append(get_conn_count(usr))		
-		#YouTube
-		else:
-			usr = db.find_course_metainfo(course[4])
-			user_info.append(get_conn_count(usr))
-			attrib = db.find_course_attrib(course[4])
+	for course in temp2:
+		if course[1] in non_relevant:
+			print "Removing non-relevant course ", course[1]
+			temp.remove(course)
+			non_relevant_flag = True
 
-		course.append(attrib['basic'])
-		course.append(attrib['advanced'])
+
+	if non_relevant_flag or update:
+		#print "Updating DB..."
+		db.update_queryresults(query, temp)
+	else:
+		db.insert_queryresults(query, temp)
+	
+	if len(temp) > 10:
+		temp = temp[0:10]	
+	
+	user_info = conn_data(db, user_id, temp)	
+	print "User Info list: ", user_info
+	#print "User not interested list: ", db.find_notinterested(user_id)
 	ret = isbn.getisbnData(query)
-	print user_info
-	return jsonify(result = temp, result2 = ret)
+	return jsonify(result = temp, result2 = ret, result3 = user_info)
 
 @app.route('/_searchredir')
 def searchredir():
@@ -79,12 +97,11 @@ def searchredir():
 	username = request.args.get('username', 0, type=str)
 	query = request.args.get('query',0, type=str)
 	
+	print uid
+	print username
+	print query
 	
-	args = {'uid':uid, 'username': username, 'query': query}
-	urlquery = urllib.urlencode(args)
-
-	#url = 'http://localhost:5000/recommend.html?uid=' + uid + '&username=' + username + '&query=' + query;
-	url =  'http://localhost:5000/recommend.html?' + urllib.urlencode(args)
+	url = 'http://localhost:5000/recommend.html?uid=' + uid + '&username=' + username + '&query=' + query; 
 	webbrowser.open(url)
 	return
 
@@ -94,39 +111,68 @@ def indexhtml():
 	user_id = request.args.get('uid', 0, type=str)
 	username = request.args.get('username', 0, type=str)
 	query = request.args.get('query',0, type=str)
-	
+
 	return	render_template("recommend.html", uid = user_id, query=query, username = username)
 	
 @app.route('/_relevant')
 def relevant():
-	a = request.args.get('a', 0, type=str)
-	b = request.args.get('b', 0, type=str)
-	uid = request.args.get('uid', 0 , type=str)
-	res = 'user '+ uid + 'says ' + str(a) + ' is not relevant for ' + str(b)
+	query = request.args.get('a', 0, type=str)
+	course = request.args.get('b', 0, type=str)
+	uid = request.args.get('c', 0 , type=str)
+	db = dbms.Database()
+	print "Inserting Non-relevant into DB ", query, course
+	db.insert_nonrelevant(query, course)
+	
+	res = 'user '+ str(uid) + 'says ' + str(course) + ' is not relevant for ' + str(query)
 	return jsonify(result = res)
+
+@app.route('/_interested')
+def interested():
+	query = request.args.get('a', 0, type=str)
+	course = request.args.get('b', 0, type=str)
+	uid = request.args.get('c', 0 , type=str)
+	db = dbms.Database()
+	print "Inserting user interests into DB ", course, uid
+	db.insert_interested(uid, course)
+	
+	res = 'Done'
+	return jsonify(result = res)
+
+@app.route('/_notinterested')
+def notinterested():
+	query = request.args.get('a', 0, type=str)
+	course = request.args.get('b', 0, type=str)
+	uid = request.args.get('c', 0 , type=str)
+	db = dbms.Database()
+	print "Inserting user interests into DB ", course, uid
+	db.insert_notinterested(uid, course)
+	
+	res = 'Done'
+	return jsonify(result = res)
+
 
 @app.route('/_basic')
 def basic():
-	c = request.args.get('c', 0, type=str)
-	d = request.args.get('d', 0, type=str)
-	uid = request.args.get('uid', 0 , type=str)
-	res = 'user '+ uid + 'says ' + str(c) + ' is too basic for ' + str(d)
+	query = request.args.get('a', 0, type=str)
+	course = request.args.get('b', 0, type=str)
+	uid = request.args.get('c', 0 , type=str)
+	res = 'user '+ uid + 'says ' + str(course) + ' is too basic for '
 	User = {"id": uid, "attrib":"basic"}
 	db = dbms.Database()
 	
-	db.insert_course_metainfo(c, User)
+	db.insert_course_metainfo(course, User)
 	return jsonify(result = res)
 
 @app.route('/_advanced')
 def advanced():
-	c = request.args.get('c', 0, type=str)
-	d = request.args.get('d', 0, type=str)
-	uid = request.args.get('uid', 0 , type=str)
+	query = request.args.get('a', 0, type=str)
+	course = request.args.get('b', 0, type=str)
+	uid = request.args.get('c', 0 , type=str)
 	res = 'user '+ uid + 'says ' + str(c) + ' is too advanced for ' + str(d)
 	User = {"id": uid, "attrib":"advanced"}
 	db = dbms.Database()
 	
-	db.insert_course_metainfo(c, User)
+	db.insert_course_metainfo(course, User)
 	return jsonify(result = res)
 
 	
@@ -191,5 +237,3 @@ if __name__ == '__main__':
 	print 'calling preprocess'
 	Read_Data.preprocess()
 	app.run(debug=True, use_reloader=True)
-	
-	
