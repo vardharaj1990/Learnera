@@ -14,8 +14,8 @@
 				uid: userid
 			  }, function(data) 
 			  {
-				  	$('#header').empty();
-				  	$('#header').text('Recommendations for you');
+				  	
+				  	$('#header').text('Recommendations for you...');
 				  	var $div = $('<div class=coursera-catalog-listings>');
 					$('#content').empty();
 					$('#content').append($div);
@@ -67,12 +67,13 @@
   		{
   		// Handler for .ready() called.
   			search_fn(userid, query);  
-      	
+      		
     	});
     
     	var search_box = function(e)
     	{
     		query = $('input[name="a"]').val();
+    		$('#header').text("Search Results...");
     		search_fn(userid,query);
     	}; 
     	
@@ -178,18 +179,17 @@
   
  });      	
 </script>
-<div id='header'><h2>Please wait while we load recommendations for you...<h2><br> <img src ='http://24.media.tumblr.com/tumblr_masolipmMm1rt8dxlo1_500.gif'></div>
+<div><h2 id='header'>Please wait while we load recommendations for you...<h2><br> </div>
 <div>
 <div style="float:left">
   <input type=text size=30 name=a> 
 
 </div>
-<div left-margin=20><a href=# id=search_click><img src="http://www.veryicon.com/icon/png/System/Black%20Glossy/Search.png" width=40 height=30></a></div>
+<div style="left-margin:40px"><a href=# id=search_click><img src="http://www.veryicon.com/icon/png/System/Black%20Glossy/Search.png" width=40 height=30></a></div>
 </div>
 <p>
 <div style ="width:100%">
-<div class="course-content" id=content></div>
-<span style='float:left; width:10%'></span>
+<div class="course-content" id=content><img src ='http://24.media.tumblr.com/tumblr_masolipmMm1rt8dxlo1_500.gif'></div>
 <div class="book-content" id=book_content></div>
 </div>
 </p>

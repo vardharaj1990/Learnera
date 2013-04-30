@@ -127,7 +127,7 @@ def relevant():
 	print "Inserting Non-relevant into DB ", query, course
 	db.insert_nonrelevant(query, course)
 	
-	res = ''
+	res = 'user '+ str(uid) + 'says ' + str(course) + ' is not relevant for ' + str(query)
 	return jsonify(result = res)
 
 @app.route('/_interested')
@@ -216,16 +216,23 @@ def redir():
 		db = dbms.Database()
 		userdata = db.find_user(uid)
 		#print db.find_user(uid)
-		interests = userdata['interests'].split(',')
+		
+		interests = []
+		key = 'interests'
+		if key in userdata:
+			interests = userdata['interests'].split(',')
+		
 		
 		
 		for i in range(0,len(interests)):
 			interests[i] = interests[i].strip().encode('ascii','ignore')
 			#print interests[i]
 			
-		print userdata['skills']['values']
-		for skill in userdata['skills']['values']:
-			interests.append(skill['skill']['name'])
+		#print userdata['skills']['values']
+		if 'skills' in userdata:
+			if 'values' in userdata['skills']:
+				for skill in userdata['skills']['values']:
+					interests.append(skill['skill']['name'])
 		
 		entries = [dict(title=i, text=interests[i]) for i in range(0,len(interests))]	
 		print interests
@@ -240,4 +247,4 @@ if __name__ == '__main__':
 	app.debug = True
 	print 'calling preprocess'
 	Read_Data.preprocess()
-	app.run(debug=True, use_reloader=False)
+	app.run(debug=True, use_reloader=True)
